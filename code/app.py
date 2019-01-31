@@ -1,4 +1,4 @@
-from tf.core.helpers import htmlEsc, mdEsc, console
+from tf.core.helpers import htmlEsc, mdEsc
 from tf.applib.helpers import dh
 from tf.applib.display import prettyPre, getBoundary, getFeatures
 from tf.applib.highlight import getHlAtt, hlText, hlRep
@@ -354,6 +354,5 @@ class TfApp(object):
   def _getSuper(app, n, tp):
     api = app.api
     L = api.L
-    console(f'{n} - {tp}')
     superNode = L.u(n, otype=tp)[0]
     return (superNode, *getBoundary(api, superNode))
