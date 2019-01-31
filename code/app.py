@@ -239,19 +239,21 @@ class TfApp(object):
         if not hlStyle:
           hlStyle = shlStyle
 
+    ltr = ' ltr ' if d.fmt is not None and '-orig-' not in d.fmt else ''
+
     doOuter = outer and nType in {slotType, 'lex'}
     if doOuter:
-      html.append('<div class="outeritem">')
+      html.append(f'<div class="outeritem{ltr}">')
 
     html.append(
-        f'<div class="{className} {boundaryClass} {hlClass}" {hlStyle}>')
+        f'<div class="{className} {boundaryClass} {hlClass}{ltr}" {hlStyle}>')
 
     if nType in {'verse', 'half_verse'}:
       passage = app.webLink(n, _asString=True)
       html.append(
           f'''
     <div class="vl">
-        <div class="vrs">{passage}</div>
+        <div class="vrs{ltr}">{passage}</div>
         {nodePart}
     </div>
 '''
@@ -288,10 +290,10 @@ class TfApp(object):
         )
       html.append(
           f'''
-    <div class="{superType.lower()} {shlClass}" {shlStyle}>
+    <div class="{superType.lower()} {shlClass}{ltr}" {shlStyle}>
         {typePart} {nodePart} {featurePart}
     </div>
-    <div class="atoms">
+    <div class="atoms{ltr}">
 '''
       )
     else:

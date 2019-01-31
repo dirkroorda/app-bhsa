@@ -32,6 +32,9 @@
   font-size: small;
   font-weight: normal;
 }
+.ltr {
+    direction: ltr ! important;
+}
 .verse {
     display: flex;
     flex-flow: row wrap;

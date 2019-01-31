@@ -138,6 +138,13 @@ FORMAT_CSS = dict(
     trans=DEFAULT_CLS,
     phono='prb',
 )
+DEFAULT_WRD = 'ltr'
+DEFAULT_WRD_ORIG = 'rtl'
+WRITING_DIR = dict(
+    orig='rtl',
+    trans='ltr',
+    phono='ltr',
+)
 
 CLASS_NAMES = dict(
     verse='verse',
