@@ -166,5 +166,6 @@ FONTW = 'SILEOT.woff'
 BROWSE_NAV_LEVEL = 2
 BROWSE_CONTENT_PRETTY = False
 
+
 def deliver():
   return (globals(), dirname(abspath(__file__)))
