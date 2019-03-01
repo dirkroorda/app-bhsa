@@ -13,3 +13,5 @@ Get started with the
 It offers this [API](https://annotation.github.io/text-fabric/Api/App/).
 
 ![shot](images/shot.png)
+
+![jup](images/jup.png)
