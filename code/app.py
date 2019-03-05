@@ -186,6 +186,7 @@ class TfApp(object):
     T = api.T
     sortNodes = api.sortNodes
     otypeRank = api.otypeRank
+    isHtml = options.get('fmt', None) in app.textFormats
 
     bigType = False
     if d.condenseType is not None and otypeRank[nType] > otypeRank[d.condenseType]:
@@ -305,7 +306,8 @@ class TfApp(object):
       occs = ''
       if nType == slotType:
         lx = L.u(n, otype='lex')[0]
-        lexLink = (app.webLink(lx, text=htmlEsc(T.text([n], fmt=d.fmt)), _asString=True))
+        text = T.text([n], fmt=d.fmt)
+        lexLink = (app.webLink(lx, text=text if isHtml else htmlEsc(text), _asString=True))
         tClass = 'h' if d.fmt is None or '-orig-' in d.fmt else 'tr'
         heading = f'<div class="{tClass}">{lexLink}</div>'
         featurePart = getFeatures(
