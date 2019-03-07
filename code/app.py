@@ -1,4 +1,4 @@
-from tf.core.helpers import htmlEsc, mdEsc
+from tf.core.helpers import mdhtmlEsc, htmlEsc
 from tf.applib.helpers import dh
 from tf.applib.display import prettyPre, getBoundary, getFeatures
 from tf.applib.highlight import getHlAtt, hlText, hlRep
@@ -20,8 +20,12 @@ ATOMS = dict(
     clause_atom='clause',
     phrase_atom='phrase',
 )
-SECTION = {'book', 'chapter', 'verse', 'half_verse'}
-VERSE = {'verse', 'half_verse'}
+BOOK = 'book'
+CHAPTER = 'chapter'
+VERSE = 'verse'
+
+SECTION = {BOOK, CHAPTER, VERSE, 'half_verse'}
+VERSES = {VERSE, 'half_verse'}
 
 
 class TfApp(object):
@@ -113,17 +117,25 @@ class TfApp(object):
     if nType == 'word':
       rep = hlText(app, [n], d.highlights, fmt=d.fmt)
     elif nType in SECTION:
-      if secLabel:
-        label = ('{}' if nType == 'book' else '{} {}' if nType == 'chapter' else '{} {}:{}')
+      if secLabel and d.withPassage:
+        sep1 = app.sectionSep1
+        sep2 = app.sectionSep2
+        label = (
+            '{}'
+            if nType == BOOK else
+            f'{{}}{sep1}{{}}'
+            if nType == CHAPTER else
+            f'{{}}{sep1}{{}}{sep2}{{}}'
+        )
         rep = label.format(*T.sectionFromNode(n))
       else:
         rep = ''
       isText = False
       if nType == 'half_verse':
         rep += F.label.v(n)
-      rep = mdEsc(htmlEsc(rep))
+      rep = mdhtmlEsc(rep)
       rep = hlRep(app, rep, n, d.highlights)
-      if nType in VERSE:
+      if nType in VERSES:
         if isLinked:
           rep = app.webLink(n, text=rep, className='vn', _asString=True)
         else:
@@ -131,12 +143,12 @@ class TfApp(object):
         rep += hlText(app, L.d(n, otype="word"), d.highlights, fmt=d.fmt)
         isText = True
     elif nType == 'lex':
-      rep = mdEsc(htmlEsc(F.voc_lex_utf8.v(n)))
+      rep = mdhtmlEsc(F.voc_lex_utf8.v(n))
       rep = hlRep(app, rep, n, d.highlights)
     else:
       rep = hlText(app, L.d(n, otype='word'), d.highlights, fmt=d.fmt)
 
-    if isLinked and nType not in VERSE:
+    if isLinked and nType not in VERSES:
       rep = app.webLink(n, text=rep, _asString=True)
 
     tClass = display.formatClass[d.fmt].lower() if isText else 'trb'
@@ -192,16 +204,16 @@ class TfApp(object):
     if d.condenseType is not None and otypeRank[nType] > otypeRank[d.condenseType]:
       bigType = True
 
-    if nType == 'book':
+    if nType == BOOK:
       html.append(app.webLink(n, _asString=True))
       return
-    if nType == 'chapter':
+    if nType == CHAPTER:
       html.append(app.webLink(n, _asString=True))
       return
 
     if bigType:
       children = ()
-    elif nType in {'verse', 'half_verse'}:
+    elif nType in VERSES:
       (thisFirstSlot, thisLastSlot) = getBoundary(api, n)
       children = sortNodes(
           set(L.d(n, otype='sentence_atom')) | {
@@ -249,7 +261,7 @@ class TfApp(object):
     html.append(
         f'<div class="{className} {boundaryClass} {hlClass}{ltr}" {hlStyle}>')
 
-    if nType in {'verse', 'half_verse'}:
+    if nType in VERSES:
       passage = app.webLink(n, _asString=True)
       html.append(
           f'''
