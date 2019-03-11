@@ -23,7 +23,7 @@ DOC_INTRO = '0_home'
 CHAR_URL = '{tfDoc}/Writing/Hebrew'
 CHAR_TEXT = 'Hebrew characters and transcriptions',
 
-FEATURE_URL = f'{DOC_URL}/features/hebrew/{{version}}/{{feature}}.html'
+FEATURE_URL = f'{DOC_URL}/features/{{feature}}'
 
 MODULE_SPECS = (
     dict(
