@@ -111,7 +111,7 @@ class TfApp(object):
     if _asApp:
       nodeRep = f' <a href="#" class="nd">{n}</a> ' if d.withNodes else ''
     else:
-      nodeRep = f' *{n}* ' if d.withNodes else ''
+      nodeRep = f' <i>{n}</i> ' if d.withNodes else ''
 
     isText = d.fmt is None or '-orig-' in d.fmt
     if nType == 'word':
