@@ -102,19 +102,12 @@ EXCLUDED_FEATURES = set(
     lex0
     lexeme_count
     mother_object_type
-    nme
     pargr
-    pfm
-    prs
     rank_occ
     root
     suffix_gender
     suffix_number
     suffix_person
-    tab
-    uvf
-    vbe
-    vbs
 '''.strip().split()
 )
 
