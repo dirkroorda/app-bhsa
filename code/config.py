@@ -74,13 +74,8 @@ EXCLUDED_FEATURES = set(
     dist
     dist_unit
     distributional_parent
-    domain
     freq_occ
     functional_parent
-    g_cons
-    g_cons_utf8
-    g_lex
-    g_lex_utf8
     g_nme
     g_nme_utf8
     g_pfm
@@ -102,7 +97,6 @@ EXCLUDED_FEATURES = set(
     lex0
     lexeme_count
     mother_object_type
-    pargr
     rank_occ
     root
     suffix_gender
