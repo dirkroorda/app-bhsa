@@ -2,6 +2,7 @@
 
 # BHSA
 
+[![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/annotation/app-bhsa/)](https://archive.softwareheritage.org/browse/origin/https://github.com/annotation/app-bhsa/)
 [![sha](sha.png) Software Heritage Archive](https://archive.softwareheritage.org/browse/origin/https://github.com/annotation/app-bhsa/)
 
 [![DOI](https://zenodo.org/badge/161639222.svg)](https://zenodo.org/badge/latestdoi/161639222)
