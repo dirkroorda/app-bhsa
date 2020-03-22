@@ -1,74 +1,71 @@
 from os.path import dirname, abspath
 
-PROTOCOL = 'http://'
-HOST = 'localhost'
-PORT = dict(
-    kernel=18981,
-    web=8101,
-)
+PROTOCOL = "http://"
+HOST = "localhost"
+PORT = dict(kernel=18981, web=8101,)
 
 OPTIONS = ()
 
-ORG = 'etcbc'
-REPO = 'bhsa'
-CORPUS = 'BHSA = Biblia Hebraica Stuttgartensia Amstelodamensis'
-VERSION = 'c'
-RELATIVE = 'tf'
+ORG = "etcbc"
+REPO = "bhsa"
+CORPUS = "BHSA = Biblia Hebraica Stuttgartensia Amstelodamensis"
+VERSION = "c"
+RELATIVE = "tf"
 
-DOI_TEXT = '10.5281/zenodo.1007624'
-DOI_URL = 'https://doi.org/10.5281/zenodo.1007624'
+DOI_TEXT = "10.5281/zenodo.1007624"
+DOI_URL = "https://doi.org/10.5281/zenodo.1007624"
 
-DOC_URL = f'https://{ORG}.github.io/{REPO}'
-DOC_INTRO = '0_home'
-CHAR_URL = '{tfDoc}/Writing/Hebrew'
-CHAR_TEXT = 'Hebrew characters and transcriptions',
+DOC_URL = f"https://{ORG}.github.io/{REPO}"
+DOC_INTRO = "0_home"
+CHAR_URL = "{tfDoc}/Writing/Hebrew"
+CHAR_TEXT = ("Hebrew characters and transcriptions",)
 
-FEATURE_URL = f'{DOC_URL}/features/{{feature}}'
+FEATURE_URL = f"{DOC_URL}/features/{{feature}}"
 
 MODULE_SPECS = (
     dict(
         org=ORG,
-        repo='phono',
+        repo="phono",
         relative=RELATIVE,
-        corpus='Phonetic Transcriptions',
+        corpus="Phonetic Transcriptions",
         docUrl=(
-            'https://nbviewer.jupyter.org/github/etcbc/phono'
-            '/blob/master/programs/phono.ipynb'
+            "https://nbviewer.jupyter.org/github/etcbc/phono"
+            "/blob/master/programs/phono.ipynb"
         ),
-        doiText='10.5281/zenodo.1007636',
-        doiUrl='https://doi.org/10.5281/zenodo.1007636',
+        doiText="10.5281/zenodo.1007636",
+        doiUrl="https://doi.org/10.5281/zenodo.1007636",
     ),
     dict(
         org=ORG,
-        repo='parallels',
+        repo="parallels",
         relative=RELATIVE,
-        corpus='Parallel Passages',
+        corpus="Parallel Passages",
         docUrl=(
-            'https://nbviewer.jupyter.org/github/etcbc/parallels'
-            '/blob/master/programs/parallels.ipynb'
+            "https://nbviewer.jupyter.org/github/etcbc/parallels"
+            "/blob/master/programs/parallels.ipynb"
         ),
-        doiText='10.5281/zenodo.1007642',
-        doiUrl='https://doi.org/10.5281/zenodo.1007642',
+        doiText="10.5281/zenodo.1007642",
+        doiUrl="https://doi.org/10.5281/zenodo.1007642",
     ),
 )
-ZIP = [REPO] + [m['repo'] for m in MODULE_SPECS]
+ZIP = [REPO] + [m["repo"] for m in MODULE_SPECS]
 
-CONDENSE_TYPE = 'verse'
+CONDENSE_TYPE = "verse"
 
-NONE_VALUES = {None, 'NA', 'none', 'unknown'}
+NONE_VALUES = {None, "NA", "none", "unknown"}
 
-STANDARD_FEATURES = '''
+STANDARD_FEATURES = """
     pdp vs vt
     lex language gloss voc_lex voc_lex_utf8
     function typ rela
     number label book
-'''
-if VERSION in {'4', '4b'}:
-  STANDARD_FEATURES.replace('voc_', 'g_')
+"""
+if VERSION in {"4", "4b"}:
+    STANDARD_FEATURES.replace("voc_", "g_")
 STANDARD_FEATURES = STANDARD_FEATURES.strip().split()
 
 EXCLUDED_FEATURES = set(
-    '''
+    """
     crossrefLCS
     crossrefSET
     dist
@@ -102,53 +99,45 @@ EXCLUDED_FEATURES = set(
     suffix_gender
     suffix_number
     suffix_person
-'''.strip().split()
+""".strip().split()
 )
 
-NO_DESCEND_TYPES = {'lex'}
+NO_DESCEND_TYPES = {"lex"}
 
 EXAMPLE_SECTION = (
-    f'<code>Genesis 1:1</code> (use'
+    f"<code>Genesis 1:1</code> (use"
     f' <a href="https://github.com/{ORG}/{REPO}'
     f'/blob/master/tf/{VERSION}/book%40en.tf" target="_blank">'
-    f'English book names</a>)'
+    f"English book names</a>)"
 )
-EXAMPLE_SECTION_TEXT = 'Genesis 1:1'
+EXAMPLE_SECTION_TEXT = "Genesis 1:1"
 
-SECTION_SEP1 = ' '
-SECTION_SEP2 = ':'
+SECTION_SEP1 = " "
+SECTION_SEP2 = ":"
 
-DEFAULT_CLS = 'trb'
-DEFAULT_CLS_ORIG = 'hb'
-FORMAT_CSS = dict(
-    orig=DEFAULT_CLS_ORIG,
-    trans=DEFAULT_CLS,
-    phono='prb',
-)
-DEFAULT_WRD = 'ltr'
-DEFAULT_WRD_ORIG = 'rtl'
-WRITING_DIR = dict(
-    orig='rtl',
-    trans='ltr',
-    phono='ltr',
-)
+DEFAULT_CLS = "trb"
+DEFAULT_CLS_ORIG = "hb"
+FORMAT_CSS = dict(orig=DEFAULT_CLS_ORIG, trans=DEFAULT_CLS, phono="prb",)
+DEFAULT_WRD = "ltr"
+DEFAULT_WRD_ORIG = "rtl"
+WRITING_DIR = dict(orig="rtl", trans="ltr", phono="ltr",)
 
 CLASS_NAMES = dict(
-    verse='verse',
-    sentence='atoms',
-    sentence_atom='satom',
-    clause='atoms',
-    clause_atom='catom',
-    phrase='atoms',
-    phrase_atom='patom',
-    subphrase='subphrase',
-    word='word',
-    lex='lextp',
+    verse="verse",
+    sentence="atoms",
+    sentence_atom="satom",
+    clause="atoms",
+    clause_atom="catom",
+    phrase="atoms",
+    phrase_atom="patom",
+    subphrase="subphrase",
+    word="word",
+    lex="lextp",
 )
 
-FONT_NAME = 'Ezra SIL'
-FONT = 'SILEOT.ttf'
-FONTW = 'SILEOT.woff'
+FONT_NAME = "Ezra SIL"
+FONT = "SILEOT.ttf"
+FONTW = "SILEOT.woff"
 
 TEXT_FORMATS = {}
 
@@ -157,4 +146,4 @@ BROWSE_CONTENT_PRETTY = False
 
 
 def deliver():
-  return (globals(), dirname(abspath(__file__)))
+    return (globals(), dirname(abspath(__file__)))
