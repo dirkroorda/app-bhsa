@@ -1,7 +1,5 @@
-from tf.core.helpers import mdhtmlEsc, htmlEsc
+from tf.core.helpers import htmlEsc
 from tf.applib.helpers import dh
-from tf.applib.display import prettyPre, getBoundary, getFeatures
-from tf.applib.highlight import getHlAtt, hlText, hlRep
 from tf.applib.api import setupApi
 from tf.applib.links import outLink
 
@@ -15,18 +13,26 @@ SHEBANQ = (
 
 SHEBANQ_LEX = f"{SHEBANQ_URL}/word" "?version={version}&id={lid}"
 
-ATOMS = dict(sentence_atom="sentence", clause_atom="clause", phrase_atom="phrase",)
-BOOK = "book"
-CHAPTER = "chapter"
-VERSE = "verse"
 
-SECTION = {BOOK, CHAPTER, VERSE, "half_verse"}
-VERSES = {VERSE, "half_verse"}
+def notice(app):
+    if int(app.api.TF.version.split(".")[0]) <= 7:
+        print(
+            f"""
+Your Text-Fabric is outdated.
+It cannot load this version of the TF app `{app.appName}`.
+Recommendation: upgrade Text-Fabric to version 8.
+Hint:
+
+    pip3 install --upgrade text-fabric
+
+"""
+        )
 
 
 class TfApp(object):
     def __init__(*args, **kwargs):
         setupApi(*args, **kwargs)
+        notice(args[0])
 
     def webLink(app, n, text=None, className=None, _asString=False, _noUrl=False):
         api = app.api
@@ -45,7 +51,7 @@ class TfApp(object):
                 .replace("/", "n")
                 .replace("=", "i"),
             )
-            href = SHEBANQ_LEX.format(version=version, lid=lexId,)
+            href = SHEBANQ_LEX.format(version=version, lid=lexId)
             title = "show this lexeme in SHEBANQ"
             if text is None:
                 text = htmlEsc(F.voc_lex_utf8.v(n))
@@ -83,259 +89,3 @@ class TfApp(object):
         if _asString:
             return result
         dh(result)
-
-    def _plain(
-        app, n, passage, isLinked, _asString, secLabel, **options,
-    ):
-        display = app.display
-        d = display.get(options)
-
-        _asApp = app._asApp
-        api = app.api
-        L = api.L
-        T = api.T
-        F = api.F
-
-        nType = F.otype.v(n)
-        result = passage
-        if _asApp:
-            nodeRep = f' <a href="#" class="nd">{n}</a> ' if d.withNodes else ""
-        else:
-            nodeRep = f" <i>{n}</i> " if d.withNodes else ""
-
-        isText = d.fmt is None or "-orig-" in d.fmt
-        if nType == "word":
-            rep = hlText(app, [n], d.highlights, fmt=d.fmt)
-        elif nType in SECTION:
-            if secLabel and d.withPassage:
-                sep1 = app.sectionSep1
-                sep2 = app.sectionSep2
-                label = (
-                    "{}"
-                    if nType == BOOK
-                    else f"{{}}{sep1}{{}}"
-                    if nType == CHAPTER
-                    else f"{{}}{sep1}{{}}{sep2}{{}}"
-                )
-                rep = label.format(*T.sectionFromNode(n))
-            else:
-                rep = ""
-            isText = False
-            if nType == "half_verse":
-                rep += F.label.v(n)
-            rep = mdhtmlEsc(rep)
-            rep = hlRep(app, rep, n, d.highlights)
-            if nType in VERSES:
-                if isLinked:
-                    rep = app.webLink(n, text=rep, className="vn", _asString=True)
-                else:
-                    rep = f'<span class="vn">{rep}</span>'
-                rep += hlText(app, L.d(n, otype="word"), d.highlights, fmt=d.fmt)
-                isText = True
-        elif nType == "lex":
-            rep = mdhtmlEsc(F.voc_lex_utf8.v(n))
-            rep = hlRep(app, rep, n, d.highlights)
-        else:
-            rep = hlText(app, L.d(n, otype="word"), d.highlights, fmt=d.fmt)
-
-        if isLinked and not passage and nType not in VERSES:
-            rep = app.webLink(n, text=rep, _asString=True)
-
-        tClass = display.formatClass[d.fmt].lower() if isText else "trb"
-        rep = f'<span class="{tClass}">{rep}</span>'
-        result += f"{rep}{nodeRep}"
-
-        if _asString or _asApp:
-            return result
-        dh(result)
-
-    def _pretty(
-        app, n, outer, html, firstSlot, lastSlot, **options,
-    ):
-        display = app.display
-        d = display.get(options)
-
-        goOn = prettyPre(app, n, firstSlot, lastSlot, d)
-        if not goOn:
-            return
-        (
-            slotType,
-            nType,
-            isBigType,
-            className,
-            boundaryClass,
-            hlAtt,
-            nodePart,
-            myStart,
-            myEnd,
-        ) = goOn
-
-        api = app.api
-        F = api.F
-        L = api.L
-        T = api.T
-        sortNodes = api.sortNodes
-        isHtml = options.get("fmt", None) in app.textFormats
-
-        if nType == BOOK:
-            html.append(app.webLink(n, _asString=True))
-            return
-        if nType == CHAPTER:
-            html.append(app.webLink(n, _asString=True))
-            return
-
-        if isBigType:
-            children = ()
-        elif nType in VERSES:
-            (thisFirstSlot, thisLastSlot) = getBoundary(api, n)
-            children = sortNodes(
-                set(L.d(n, otype="sentence_atom"))
-                | {
-                    L.u(thisFirstSlot, otype="sentence_atom")[0],
-                    L.u(thisLastSlot, otype="sentence_atom")[0],
-                }
-            )
-        elif nType == "sentence":
-            children = L.d(n, otype="sentence_atom")
-        elif nType == "sentence_atom" or nType == "clause":
-            children = L.d(n, otype="clause_atom")
-        elif nType == "clause_atom" or nType == "phrase":
-            children = L.d(n, otype="phrase_atom")
-        elif nType == "phrase_atom" or nType == "subphrase":
-            children = L.d(n, otype=slotType)
-        elif nType == "lex":
-            children = ()
-        elif nType == slotType:
-            children = ()
-            lx = L.u(n, otype="lex")[0]
-
-        (hlClass, hlStyle) = hlAtt
-
-        superType = ATOMS.get(nType, None)
-        if superType:
-            (superNode, superStart, superEnd) = app._getSuper(n, superType)
-            if superStart < myStart:
-                boundaryClass += " r"
-            if superEnd > myEnd:
-                boundaryClass += " l"
-            nodePart = f'<a href="#" class="nd">{superNode}</a>' if d.withNodes else ""
-            (shlClass, shlStyle) = getHlAtt(app, superNode, d.highlights)
-            if shlClass:
-                if not hlClass:
-                    hlClass = shlClass
-                if not hlStyle:
-                    hlStyle = shlStyle
-
-        ltr = " ltr " if d.fmt is not None and "-orig-" not in d.fmt else ""
-
-        doOuter = outer and nType in {slotType, "lex"}
-        if doOuter:
-            html.append(f'<div class="outeritem{ltr}">')
-
-        html.append(
-            f'<div class="{className} {boundaryClass} {hlClass}{ltr}" {hlStyle}>'
-        )
-
-        if nType in VERSES:
-            passage = app.webLink(n, _asString=True)
-            html.append(
-                f"""
-    <div class="vl">
-        <div class="vrs{ltr}">{passage}</div>
-        {nodePart}
-    </div>
-"""
-            )
-        elif superType:
-            typePart = app.webLink(superNode, text=superType, _asString=True)
-            featurePart = ""
-            if superType == "sentence":
-                featurePart = getFeatures(
-                    app, superNode, ("number",), o=n, plain=True, **options,
-                )
-            elif superType == "clause":
-                featurePart = getFeatures(
-                    app, superNode, ("rela", "typ"), o=n, plain=True, **options,
-                )
-            elif superType == "phrase":
-                featurePart = getFeatures(
-                    app, superNode, ("function", "typ"), o=n, plain=True, **options,
-                )
-            html.append(
-                f"""
-    <div class="{superType.lower()} {shlClass}{ltr}" {shlStyle}>
-        {typePart} {nodePart} {featurePart}
-    </div>
-    <div class="atoms{ltr}">
-"""
-            )
-        else:
-            if nodePart:
-                html.append(nodePart)
-
-            heading = ""
-            featurePart = ""
-            occs = ""
-            if nType == slotType:
-                lx = L.u(n, otype="lex")[0]
-                text = T.text([n], fmt=d.fmt)
-                lexLink = app.webLink(
-                    lx, text=text if isHtml else htmlEsc(text), _asString=True
-                )
-                tClass = "h" if d.fmt is None or "-orig-" in d.fmt else "tr"
-                heading = f'<div class="{tClass}">{lexLink}</div>'
-                featurePart = getFeatures(
-                    app,
-                    n,
-                    ("pdp", "gloss", "vs", "vt"),
-                    givenValue=dict(
-                        pdp=app.webLink(n, text=htmlEsc(F.pdp.v(n)), _asString=True),
-                        gloss=htmlEsc(F.gloss.v(lx)),
-                    ),
-                    **options,
-                )
-            elif nType == "lex":
-                extremeOccs = getBoundary(api, n)
-                linkOccs = " - ".join(
-                    app.webLink(lo, _asString=True) for lo in extremeOccs
-                )
-                heading = f'<div class="h">{htmlEsc(F.voc_lex_utf8.v(n))}</div>'
-                occs = f'<div class="occs">{linkOccs}</div>'
-                featurePart = getFeatures(
-                    app,
-                    n,
-                    ("voc_lex", "gloss"),
-                    givenValue=dict(
-                        voc_lex=app.webLink(
-                            n, text=htmlEsc(F.voc_lex.v(n)), _asString=True
-                        )
-                    ),
-                    **options,
-                )
-            html.append(heading)
-            html.append(featurePart)
-            html.append(occs)
-
-        for ch in children:
-            app._pretty(
-                ch, False, html, firstSlot, lastSlot, **options,
-            )
-        if superType:
-            html.append(
-                """
-    </div>
-"""
-            )
-        html.append(
-            """
-</div>
-"""
-        )
-        if doOuter:
-            html.append("</div>")
-
-    def _getSuper(app, n, tp):
-        api = app.api
-        L = api.L
-        superNode = L.u(n, otype=tp)[0]
-        return (superNode, *getBoundary(api, superNode))

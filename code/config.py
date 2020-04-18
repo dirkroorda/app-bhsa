@@ -1,10 +1,10 @@
 from os.path import dirname, abspath
 
+API_VERSION = 1
+
 PROTOCOL = "http://"
 HOST = "localhost"
-PORT = dict(kernel=18981, web=8101,)
-
-OPTIONS = ()
+PORT = dict(kernel=18981, web=8101)
 
 ORG = "etcbc"
 REPO = "bhsa"
@@ -18,7 +18,7 @@ DOI_URL = "https://doi.org/10.5281/zenodo.1007624"
 DOC_URL = f"https://{ORG}.github.io/{REPO}"
 DOC_INTRO = "0_home"
 CHAR_URL = "{tfDoc}/Writing/Hebrew"
-CHAR_TEXT = ("Hebrew characters and transcriptions",)
+CHAR_TEXT = ("Hebrew characters and transcriptions")
 
 FEATURE_URL = f"{DOC_URL}/features/{{feature}}"
 
@@ -50,6 +50,7 @@ MODULE_SPECS = (
 )
 ZIP = [REPO] + [m["repo"] for m in MODULE_SPECS]
 
+BASE_TYPE = "word"
 CONDENSE_TYPE = "verse"
 
 NONE_VALUES = {None, "NA", "none", "unknown"}
@@ -58,7 +59,7 @@ STANDARD_FEATURES = """
     pdp vs vt
     lex language gloss voc_lex voc_lex_utf8
     function typ rela
-    number label book
+    number label
 """
 if VERSION in {"4", "4b"}:
     STANDARD_FEATURES.replace("voc_", "g_")
@@ -115,25 +116,8 @@ EXAMPLE_SECTION_TEXT = "Genesis 1:1"
 SECTION_SEP1 = " "
 SECTION_SEP2 = ":"
 
-DEFAULT_CLS = "trb"
-DEFAULT_CLS_ORIG = "hb"
-FORMAT_CSS = dict(orig=DEFAULT_CLS_ORIG, trans=DEFAULT_CLS, phono="prb",)
-DEFAULT_WRD = "ltr"
-DEFAULT_WRD_ORIG = "rtl"
-WRITING_DIR = dict(orig="rtl", trans="ltr", phono="ltr",)
-
-CLASS_NAMES = dict(
-    verse="verse",
-    sentence="atoms",
-    sentence_atom="satom",
-    clause="atoms",
-    clause_atom="catom",
-    phrase="atoms",
-    phrase_atom="patom",
-    subphrase="subphrase",
-    word="word",
-    lex="lextp",
-)
+WRITING = "hbo"
+WRITING_DIR = "rtl"
 
 FONT_NAME = "Ezra SIL"
 FONT = "SILEOT.ttf"
@@ -143,6 +127,70 @@ TEXT_FORMATS = {}
 
 BROWSE_NAV_LEVEL = 2
 BROWSE_CONTENT_PRETTY = False
+
+VERSES = {"verse", "half_verse"}
+
+LEX = dict(typ="lex", feat="voc_lex_utf8", cls="lex", target="word")
+
+TRANSFORM = None
+
+CHILD_TYPE = dict(
+    book="chapter",
+    chapter="verse",
+    verse="sentence_atom",
+    half_verse="sentence_atom",
+    sentence="sentence_atom",
+    sentence_atom="clause_atom",
+    clause="clause_atom",
+    clause_atom="phrase_atom",
+    phrase="phrase_atom",
+    phrase_atom="word",
+    subphrase="word",
+)
+
+SUPER_TYPE = dict(sentence_atom="sentence", clause_atom="clause", phrase_atom="phrase")
+
+PLAIN_TYPES = None
+
+PRETTY_TYPES = dict(
+    book=("{book}", "", ""),
+    chapter=("{chapter}", "", ""),
+    verse=("{verse}", "", ""),
+    half_verse=("{label}", "", ""),
+    sentence=("", "number", ""),
+    sentence_atom=("", "number", ""),
+    clause=("", "rela typ", ""),
+    clause_atom=("", "code", ""),
+    phrase=("", "function typ", ""),
+    phrase_atom=("", "rela typ", ""),
+    subphrase=("", "number", ""),
+    lex=(True, "", "gloss"),
+    word=(True, "", "pdp gloss vs vt"),
+)
+
+LEVELS = dict(
+    book=dict(level=3, flow="col", wrap=False, stretch=False),
+    chapter=dict(level=3, flow="col", wrap=False, strectch=False),
+    verse=dict(level=3, flow="col", wrap=False, strectch=False),
+    half_verse=dict(level=3, flow="col", wrap=False, strectch=False),
+    sentence=dict(level=3, flow="row", wrap=True, strectch=True),
+    sentence_atom=dict(level=1, flow="row", wrap=True, strectch=True),
+    clause=dict(level=2, flow="row", wrap=True, strectch=True),
+    clause_atom=dict(level=1, flow="row", wrap=True, strectch=True),
+    phrase=dict(level=2, flow="row", wrap=True, strectch=True),
+    phrase_atom=dict(level=1, flow="row", wrap=True, strectch=True),
+    suphrase=dict(level=1, flow="row", wrap=True, strectch=True),
+    lex=dict(level=0, flow="col", wrap=False, strectch=False),
+    word=dict(level=0, flow="col", wrap=False, strectch=False),
+)
+
+INTERFACE_DEFAULTS = dict(
+    withTypes=True,
+    withNodes=False,
+    showFeatures=True,
+    lineNumbers=None,
+    graphics=None,
+)
 
 
 def deliver():
