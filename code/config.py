@@ -128,7 +128,7 @@ TEXT_FORMATS = {}
 BROWSE_NAV_LEVEL = 2
 BROWSE_CONTENT_PRETTY = False
 
-VERSES = {"verse", "half_verse"}
+VERSE_TYPES = {"verse", "half_verse"}
 
 LEX = dict(typ="lex", feat="voc_lex_utf8", cls="lex", target="word")
 
@@ -165,7 +165,7 @@ PRETTY_TYPES = dict(
     phrase_atom=("", "rela typ", ""),
     subphrase=("", "number", ""),
     lex=(True, "", "gloss"),
-    word=(True, "", "pdp gloss vs vt"),
+    word=(True, "", "pdp lex:gloss vs vt"),
 )
 
 LEVELS = dict(
@@ -184,13 +184,7 @@ LEVELS = dict(
     word=dict(level=0, flow="col", wrap=False, strectch=False),
 )
 
-INTERFACE_DEFAULTS = dict(
-    withTypes=True,
-    withNodes=False,
-    showFeatures=True,
-    lineNumbers=None,
-    graphics=None,
-)
+INTERFACE_DEFAULTS = dict()
 
 
 def deliver():
