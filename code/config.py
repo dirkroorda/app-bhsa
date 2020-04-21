@@ -148,40 +148,88 @@ CHILD_TYPE = dict(
     subphrase="word",
 )
 
+
 SUPER_TYPE = dict(sentence_atom="sentence", clause_atom="clause", phrase_atom="phrase")
 
-PLAIN_TYPES = None
-
-PRETTY_TYPES = dict(
-    book=("{book}", "", ""),
-    chapter=("{chapter}", "", ""),
-    verse=("{verse}", "", ""),
-    half_verse=("{label}", "", ""),
-    sentence=("", "number", ""),
-    sentence_atom=("", "number", ""),
-    clause=("", "rela typ", ""),
-    clause_atom=("", "code", ""),
-    phrase=("", "function typ", ""),
-    phrase_atom=("", "rela typ", ""),
-    subphrase=("", "number", ""),
-    lex=(True, "", "gloss"),
-    word=(True, "", "pdp lex:gloss vs vt"),
-)
-
-LEVELS = dict(
-    book=dict(level=3, flow="col", wrap=False, stretch=False),
-    chapter=dict(level=3, flow="col", wrap=False, strectch=False),
-    verse=dict(level=3, flow="col", wrap=False, strectch=False),
-    half_verse=dict(level=3, flow="col", wrap=False, strectch=False),
-    sentence=dict(level=3, flow="row", wrap=True, strectch=True),
-    sentence_atom=dict(level=1, flow="row", wrap=True, strectch=True),
-    clause=dict(level=2, flow="row", wrap=True, strectch=True),
-    clause_atom=dict(level=1, flow="row", wrap=True, strectch=True),
-    phrase=dict(level=2, flow="row", wrap=True, strectch=True),
-    phrase_atom=dict(level=1, flow="row", wrap=True, strectch=True),
-    suphrase=dict(level=1, flow="row", wrap=True, strectch=True),
-    lex=dict(level=0, flow="col", wrap=False, strectch=False),
-    word=dict(level=0, flow="col", wrap=False, strectch=False),
+TYPE_DISPLAY = dict(
+    book=dict(
+        template="{book}",
+        bareFeatures="",
+        features="",
+        level=3, flow="col", wrap=False, stretch=False,
+    ),
+    chapter=dict(
+        template="{chapter}",
+        bareFeatures="",
+        features="",
+        level=3, flow="col", wrap=False, strectch=False,
+    ),
+    verse=dict(
+        template="{verse}",
+        bareFeatures="",
+        features="",
+        level=3, flow="col", wrap=False, strectch=False,
+    ),
+    half_verse=dict(
+        template="{label}",
+        bareFeatures="",
+        features="",
+        level=3, flow="col", wrap=False, strectch=False,
+    ),
+    sentence=dict(
+        template="",
+        bareFeatures="number",
+        features="",
+        level=3, flow="row", wrap=True, strectch=True,
+    ),
+    sentence_atom=dict(
+        template="",
+        bareFeatures="number",
+        features="",
+        level=1, flow="row", wrap=True, strectch=True,
+    ),
+    clause=dict(
+        template="",
+        bareFeatures="rela",
+        features="typ",
+        level=2, flow="row", wrap=True, strectch=True,
+    ),
+    clause_atom=dict(
+        template="",
+        bareFeatures="code",
+        features="",
+        level=1, flow="row", wrap=True, strectch=True,
+    ),
+    phrase=dict(
+        template="",
+        bareFeatures="function",
+        features="typ",
+        level=2, flow="row", wrap=True, strectch=True,
+    ),
+    phrase_atom=dict(
+        template="",
+        bareFeatures="rela",
+        features="typ",
+        level=1, flow="row", wrap=True, strectch=True,
+    ),
+    subphrase=dict(
+        template="",
+        bareFeatures="number",
+        features="",
+        level=1, flow="row", wrap=True, strectch=True,
+    ),
+    lex=dict(
+        template=True,
+        bareFeatures="gloss",
+        features="",
+        level=0, flow="col", wrap=False, strectch=False,
+    ),
+    word=dict(
+        template=True,
+        bareFeatures="lex:gloss",
+        features="pdp vs vt",
+        level=0, flow="col", wrap=False, strectch=False,
+    ),
 )
 
 INTERFACE_DEFAULTS = dict()

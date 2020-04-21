@@ -30,11 +30,11 @@ Hint:
 
 
 class TfApp(object):
-    def __init__(*args, **kwargs):
-        setupApi(*args, **kwargs)
-        notice(args[0])
+    def __init__(app, *args, **kwargs):
+        setupApi(app, *args, **kwargs)
+        notice(app)
 
-    def webLink(app, n, text=None, className=None, _asString=False, _noUrl=False):
+    def webLink(app, n, text=None, clsName=None, _asString=False, _noUrl=False):
         api = app.api
         T = api.T
         F = api.F
@@ -55,7 +55,7 @@ class TfApp(object):
             title = "show this lexeme in SHEBANQ"
             if text is None:
                 text = htmlEsc(F.voc_lex_utf8.v(n))
-            result = outLink(text, href, title=title, className=className)
+            result = outLink(text, href, title=title, clsName=clsName)
             if _asString:
                 return result
             dh(result)
@@ -82,7 +82,7 @@ class TfApp(object):
             text,
             href,
             title=title,
-            className=className,
+            clsName=clsName,
             target=target,
             passage=passageText,
         )
