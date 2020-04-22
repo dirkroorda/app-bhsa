@@ -50,17 +50,14 @@ MODULE_SPECS = (
 )
 ZIP = [REPO] + [m["repo"] for m in MODULE_SPECS]
 
-BASE_TYPE = "word"
-CONDENSE_TYPE = "verse"
-
-NONE_VALUES = {None, "NA", "none", "unknown"}
-
 STANDARD_FEATURES = """
     pdp vs vt
-    lex language gloss voc_lex voc_lex_utf8
-    function typ rela
-    number label
+    lex language gloss
+    voc_lex voc_lex_utf8
+    function typ rela number
+    label
 """
+
 if VERSION in {"4", "4b"}:
     STANDARD_FEATURES.replace("voc_", "g_")
 STANDARD_FEATURES = STANDARD_FEATURES.strip().split()
@@ -100,10 +97,7 @@ EXCLUDED_FEATURES = set(
     suffix_gender
     suffix_number
     suffix_person
-""".strip().split()
-)
-
-NO_DESCEND_TYPES = {"lex"}
+""".strip().split())
 
 EXAMPLE_SECTION = (
     f"<code>Genesis 1:1</code> (use"
@@ -113,121 +107,102 @@ EXAMPLE_SECTION = (
 )
 EXAMPLE_SECTION_TEXT = "Genesis 1:1"
 
-SECTION_SEP1 = " "
-SECTION_SEP2 = ":"
-
-WRITING = "hbo"
-WRITING_DIR = "rtl"
-
-FONT_NAME = "Ezra SIL"
-FONT = "SILEOT.ttf"
-FONTW = "SILEOT.woff"
-
-TEXT_FORMATS = {}
-
-BROWSE_NAV_LEVEL = 2
-BROWSE_CONTENT_PRETTY = False
-
-VERSE_TYPES = {"verse", "half_verse"}
-
-LEX = dict(typ="lex", feat="voc_lex_utf8", cls="lex", target="word")
-
-TRANSFORM = None
-
-CHILD_TYPE = dict(
-    book="chapter",
-    chapter="verse",
-    verse="sentence_atom",
-    half_verse="sentence_atom",
-    sentence="sentence_atom",
-    sentence_atom="clause_atom",
-    clause="clause_atom",
-    clause_atom="phrase_atom",
-    phrase="phrase_atom",
-    phrase_atom="word",
-    subphrase="word",
+DATA_DISPLAY = dict(
+    noneValues={None, "NA", "none", "unknown"},
+    sectionSep1=" ",
+    sectionSep2=":",
+    writing="hbo",
+    writingDir="rtl",
+    fontName="Ezra SIL",
+    font="SILEOT.ttf",
+    fontw="SILEOT.woff",
+    textFormats={},
+    browseNavLevel=2,
+    browseContentPretty=False,
 )
-
-
-SUPER_TYPE = dict(sentence_atom="sentence", clause_atom="clause", phrase_atom="phrase")
 
 TYPE_DISPLAY = dict(
     book=dict(
         template="{book}",
-        bareFeatures="",
-        features="",
+        children="chapter",
         level=3, flow="col", wrap=False, stretch=False,
     ),
     chapter=dict(
         template="{chapter}",
-        bareFeatures="",
-        features="",
+        children="verse",
         level=3, flow="col", wrap=False, strectch=False,
     ),
     verse=dict(
         template="{verse}",
-        bareFeatures="",
-        features="",
+        children="sentence_atom",
+        condense=True,
         level=3, flow="col", wrap=False, strectch=False,
     ),
     half_verse=dict(
         template="{label}",
-        bareFeatures="",
-        features="",
+        children="sentence_atom",
+        verselike=True,
         level=3, flow="col", wrap=False, strectch=False,
     ),
     sentence=dict(
         template="",
-        bareFeatures="number",
-        features="",
+        featuresBare="number",
+        children="sentence_atom",
         level=3, flow="row", wrap=True, strectch=True,
     ),
     sentence_atom=dict(
         template="",
-        bareFeatures="number",
-        features="",
+        featuresBare="number",
+        children="clause_atom",
+        super="sentence",
         level=1, flow="row", wrap=True, strectch=True,
     ),
     clause=dict(
         template="",
-        bareFeatures="rela",
+        featuresBare="rela",
         features="typ",
+        children="clause_atom",
         level=2, flow="row", wrap=True, strectch=True,
     ),
     clause_atom=dict(
         template="",
-        bareFeatures="code",
-        features="",
+        featuresBare="code",
+        children="phrase_atom",
+        super="clause",
         level=1, flow="row", wrap=True, strectch=True,
     ),
     phrase=dict(
         template="",
-        bareFeatures="function",
+        featuresBare="function",
         features="typ",
+        children="phrase_atom",
         level=2, flow="row", wrap=True, strectch=True,
     ),
     phrase_atom=dict(
         template="",
-        bareFeatures="rela",
+        featuresBare="rela",
         features="typ",
+        children="word",
+        super="phrase",
         level=1, flow="row", wrap=True, strectch=True,
     ),
     subphrase=dict(
         template="",
-        bareFeatures="number",
-        features="",
+        featuresBare="number",
+        children="word",
         level=1, flow="row", wrap=True, strectch=True,
     ),
     lex=dict(
-        template=True,
-        bareFeatures="gloss",
-        features="",
+        template="{voc_lex_utf8",
+        featuresBare="gloss",
+        lexTarget="word",
         level=0, flow="col", wrap=False, strectch=False,
     ),
     word=dict(
         template=True,
-        bareFeatures="lex:gloss",
+        featuresBare="lex:gloss",
         features="pdp vs vt",
+        base=True,
         level=0, flow="col", wrap=False, strectch=False,
     ),
 )
