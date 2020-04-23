@@ -18,7 +18,7 @@ DOI_URL = "https://doi.org/10.5281/zenodo.1007624"
 DOC_URL = f"https://{ORG}.github.io/{REPO}"
 DOC_INTRO = "0_home"
 CHAR_URL = "{tfDoc}/Writing/Hebrew"
-CHAR_TEXT = ("Hebrew characters and transcriptions")
+CHAR_TEXT = "Hebrew characters and transcriptions"
 
 FEATURE_URL = f"{DOC_URL}/features/{{feature}}"
 
@@ -97,7 +97,8 @@ EXCLUDED_FEATURES = set(
     suffix_gender
     suffix_number
     suffix_person
-""".strip().split())
+""".strip().split()
+)
 
 EXAMPLE_SECTION = (
     f"<code>Genesis 1:1</code> (use"
@@ -107,104 +108,26 @@ EXAMPLE_SECTION = (
 )
 EXAMPLE_SECTION_TEXT = "Genesis 1:1"
 
-DATA_DISPLAY = dict(
-    noneValues={None, "NA", "none", "unknown"},
-    sectionSep1=" ",
-    sectionSep2=":",
-    writing="hbo",
-    writingDir="rtl",
-    fontName="Ezra SIL",
-    font="SILEOT.ttf",
-    fontw="SILEOT.woff",
-    textFormats={},
-    browseNavLevel=2,
-    browseContentPretty=False,
-)
+DATA_DISPLAY = dict(noneValues={None, "NA", "none", "unknown"}, writing="hbo",)
 
 TYPE_DISPLAY = dict(
-    book=dict(
-        template="{book}",
-        children="chapter",
-        level=3, flow="col", wrap=False, stretch=False,
-    ),
-    chapter=dict(
-        template="{chapter}",
-        children="verse",
-        level=3, flow="col", wrap=False, strectch=False,
-    ),
-    verse=dict(
-        template="{verse}",
-        children="sentence_atom",
-        condense=True,
-        level=3, flow="col", wrap=False, strectch=False,
-    ),
-    half_verse=dict(
-        template="{label}",
-        children="sentence_atom",
-        verselike=True,
-        level=3, flow="col", wrap=False, strectch=False,
-    ),
-    sentence=dict(
-        template="",
-        featuresBare="number",
-        children="sentence_atom",
-        level=3, flow="row", wrap=True, strectch=True,
-    ),
+    verse=dict(children="sentence_atom",),
+    half_verse=dict(template="{label}", children="sentence_atom", verselike=True,),
+    sentence=dict(featuresBare="number", children="sentence_atom",),
     sentence_atom=dict(
-        template="",
-        featuresBare="number",
-        children="clause_atom",
-        super="sentence",
-        level=1, flow="row", wrap=True, strectch=True,
+        featuresBare="number", children="clause_atom", super="sentence", level=1,
     ),
-    clause=dict(
-        template="",
-        featuresBare="rela",
-        features="typ",
-        children="clause_atom",
-        level=2, flow="row", wrap=True, strectch=True,
-    ),
+    clause=dict(featuresBare="rela", features="typ", children="clause_atom",),
     clause_atom=dict(
-        template="",
-        featuresBare="code",
-        children="phrase_atom",
-        super="clause",
-        level=1, flow="row", wrap=True, strectch=True,
+        featuresBare="code", children="phrase_atom", super="clause", level=1,
     ),
-    phrase=dict(
-        template="",
-        featuresBare="function",
-        features="typ",
-        children="phrase_atom",
-        level=2, flow="row", wrap=True, strectch=True,
-    ),
+    phrase=dict(featuresBare="function", features="typ", children="phrase_atom",),
     phrase_atom=dict(
-        template="",
-        featuresBare="rela",
-        features="typ",
-        children="word",
-        super="phrase",
-        level=1, flow="row", wrap=True, strectch=True,
+        featuresBare="rela", features="typ", children="word", super="phrase", level=1,
     ),
-    subphrase=dict(
-        template="",
-        featuresBare="number",
-        children="word",
-        level=1, flow="row", wrap=True, strectch=True,
-    ),
-    lex=dict(
-        template="{voc_lex_utf8",
-        featuresBare="gloss",
-        lexTarget="word",
-        level=0, flow="col", wrap=False, strectch=False,
-    ),
-    word=dict(
-        template=True,
-        featuresBare="lex:gloss",
-        features="pdp vs vt",
-        base=True,
-        level=0, flow="col", wrap=False, strectch=False,
-    ),
+    subphrase=dict(featuresBare="number", children="word",),
+    lex=dict(template="{voc_lex_utf8}", featuresBare="gloss", lexTarget="word",),
+    word=dict(featuresBare="lex:gloss", features="pdp vs vt",),
 )
 
 INTERFACE_DEFAULTS = dict()
