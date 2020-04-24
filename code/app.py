@@ -1,17 +1,4 @@
-from tf.core.helpers import htmlEsc
-from tf.applib.helpers import dh
 from tf.applib.api import setupApi
-from tf.applib.links import outLink
-
-SHEBANQ_URL = "https://shebanq.ancient-data.org/hebrew"
-
-SHEBANQ = (
-    f"{SHEBANQ_URL}/text"
-    "?book={book}&chapter={chapter}&verse={verse}&version={version}"
-    "&mr=m&qw=q&tp=txt_p&tr=hb&wget=v&qget=v&nget=vt"
-)
-
-SHEBANQ_LEX = f"{SHEBANQ_URL}/word" "?version={version}&id={lid}"
 
 
 def notice(app):
@@ -34,58 +21,17 @@ class TfApp(object):
         setupApi(app, *args, **kwargs)
         notice(app)
 
-    def webLink(app, n, text=None, clsName=None, _asString=False, _noUrl=False):
+    def getLexId(app, n):
         api = app.api
-        T = api.T
         F = api.F
-        version = app.version
-        nType = F.otype.v(n)
-        if nType == "lex":
-            lex = F.lex.v(n)
-            lan = F.language.v(n)
-            lexId = "{}{}".format(
-                "1" if lan == "Hebrew" else "2",
-                lex.replace(">", "A")
-                .replace("<", "O")
-                .replace("[", "v")
-                .replace("/", "n")
-                .replace("=", "i"),
-            )
-            href = SHEBANQ_LEX.format(version=version, lid=lexId)
-            title = "show this lexeme in SHEBANQ"
-            if text is None:
-                text = htmlEsc(F.voc_lex_utf8.v(n))
-            result = outLink(text, href, title=title, clsName=clsName)
-            if _asString:
-                return result
-            dh(result)
-            return
 
-        (bookLa, chapter, verse) = T.sectionFromNode(n, lang="la", fillup=True)
-        passageText = app.sectionStrFromNode(n)
-        href = (
-            "#"
-            if _noUrl
-            else SHEBANQ.format(
-                version=version, book=bookLa, chapter=chapter, verse=verse,
-            )
+        lex = F.lex.v(n)
+        lan = F.language.v(n)
+        return "{}{}".format(
+            "1" if lan == "Hebrew" else "2",
+            lex.replace(">", "A")
+            .replace("<", "O")
+            .replace("[", "v")
+            .replace("/", "n")
+            .replace("=", "i"),
         )
-        if text is None:
-            text = passageText
-            title = "show this passage in SHEBANQ"
-        else:
-            title = passageText
-        if _noUrl:
-            title = None
-        target = "" if _noUrl else None
-        result = outLink(
-            text,
-            href,
-            title=title,
-            clsName=clsName,
-            target=target,
-            passage=passageText,
-        )
-        if _asString:
-            return result
-        dh(result)

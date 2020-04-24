@@ -2,65 +2,45 @@ from os.path import dirname, abspath
 
 API_VERSION = 1
 
-PROTOCOL = "http://"
-HOST = "localhost"
-PORT = dict(kernel=18981, web=8101)
-
-ORG = "etcbc"
-REPO = "bhsa"
-CORPUS = "BHSA = Biblia Hebraica Stuttgartensia Amstelodamensis"
-VERSION = "c"
-RELATIVE = "tf"
-
-DOI_TEXT = "10.5281/zenodo.1007624"
-DOI_URL = "https://doi.org/10.5281/zenodo.1007624"
-
-DOC_URL = f"https://{ORG}.github.io/{REPO}"
-DOC_INTRO = "0_home"
-CHAR_URL = "{tfDoc}/Writing/Hebrew"
-CHAR_TEXT = "Hebrew characters and transcriptions"
-
-FEATURE_URL = f"{DOC_URL}/features/{{feature}}"
-
-MODULE_SPECS = (
-    dict(
-        org=ORG,
-        repo="phono",
-        relative=RELATIVE,
-        corpus="Phonetic Transcriptions",
-        docUrl=(
-            "https://nbviewer.jupyter.org/github/etcbc/phono"
-            "/blob/master/programs/phono.ipynb"
+PROVENANCE_SPEC = dict(
+    org="etcbc",
+    repo="bhsa",
+    version="c",
+    moduleSpecs=(
+        dict(
+            repo="phono",
+            org="etcbc",
+            doi="10.5281/zenodo.1007636",
+            corpus="Phonetic Transcriptions",
+            docUrl="{nbUrl}/etcbc/phono/blob/master/programs/phono.ipynb",
         ),
-        doiText="10.5281/zenodo.1007636",
-        doiUrl="https://doi.org/10.5281/zenodo.1007636",
-    ),
-    dict(
-        org=ORG,
-        repo="parallels",
-        relative=RELATIVE,
-        corpus="Parallel Passages",
-        docUrl=(
-            "https://nbviewer.jupyter.org/github/etcbc/parallels"
-            "/blob/master/programs/parallels.ipynb"
+        dict(
+            repo="parallels",
+            doi="10.5281/zenodo.1007642",
+            corpus="Parallel Passages",
+            docUrl="{nbUrl}/{org}/parallels/blob/master/programs/parallels.ipynb",
         ),
-        doiText="10.5281/zenodo.1007642",
-        doiUrl="https://doi.org/10.5281/zenodo.1007642",
     ),
+    doi="10.5281/zenodo.1007624",
+    corpus="BHSA = Biblia Hebraica Stuttgartensia Amstelodamensis",
+    webBase="https://shebanq.ancient-data.org/hebrew",
+    webUrl=(
+        "{base}/text"
+        "?book=<1>&chapter=<2>&verse=<3>&version={version}"
+        "&mr=m&qw=q&tp=txt_p&tr=hb&wget=v&qget=v&nget=vt"
+    ),
+    webUrlLex="{base}/word?version={version}&id={lid}",
+    webLang="la",
+    webHint="Show this on SHEBANQ",
 )
-ZIP = [REPO] + [m["repo"] for m in MODULE_SPECS]
 
-STANDARD_FEATURES = """
-    pdp vs vt
-    lex language gloss
-    voc_lex voc_lex_utf8
-    function typ rela number
-    label
-"""
-
-if VERSION in {"4", "4b"}:
-    STANDARD_FEATURES.replace("voc_", "g_")
-STANDARD_FEATURES = STANDARD_FEATURES.strip().split()
+DOCS = dict(
+    docExt="",
+    docRoot="https://{org}.github.io",
+    docBase="{docRoot}/{repo}",
+    docPage="0_home",
+    featurePage="0_home",
+)
 
 EXCLUDED_FEATURES = set(
     """
@@ -100,34 +80,37 @@ EXCLUDED_FEATURES = set(
 """.strip().split()
 )
 
-EXAMPLE_SECTION = (
-    f"<code>Genesis 1:1</code> (use"
-    f' <a href="https://github.com/{ORG}/{REPO}'
-    f'/blob/master/tf/{VERSION}/book%40en.tf" target="_blank">'
-    f"English book names</a>)"
-)
-EXAMPLE_SECTION_TEXT = "Genesis 1:1"
 
-DATA_DISPLAY = dict(noneValues={None, "NA", "none", "unknown"}, writing="hbo",)
+DATA_DISPLAY = dict(
+    noneValues={None, "NA", "none", "unknown"},
+    excludedFeatures=EXCLUDED_FEATURES,
+    writing="hbo",
+    exampleSectionHtml=(
+        "<code>Genesis 1:1</code> (use"
+        ' <a href="https://github.com/{org}/{repo}'
+        '/blob/master/tf/{version}/book%40en.tf" target="_blank">'
+        "English book names</a>)"
+    ),
+)
 
 TYPE_DISPLAY = dict(
-    verse=dict(children="sentence_atom",),
-    half_verse=dict(template="{label}", children="sentence_atom", verselike=True,),
-    sentence=dict(featuresBare="number", children="sentence_atom",),
+    verse=dict(children="sentence_atom"),
+    half_verse=dict(template="{label}", children="sentence_atom", verselike=True),
+    sentence=dict(featuresBare="number", children="sentence_atom"),
     sentence_atom=dict(
         featuresBare="number", children="clause_atom", super="sentence", level=1,
     ),
-    clause=dict(featuresBare="rela", features="typ", children="clause_atom",),
+    clause=dict(featuresBare="rela", features="typ", children="clause_atom"),
     clause_atom=dict(
         featuresBare="code", children="phrase_atom", super="clause", level=1,
     ),
-    phrase=dict(featuresBare="function", features="typ", children="phrase_atom",),
+    phrase=dict(featuresBare="function", features="typ", children="phrase_atom"),
     phrase_atom=dict(
         featuresBare="rela", features="typ", children="word", super="phrase", level=1,
     ),
-    subphrase=dict(featuresBare="number", children="word",),
-    lex=dict(template="{voc_lex_utf8}", featuresBare="gloss", lexTarget="word",),
-    word=dict(featuresBare="lex:gloss", features="pdp vs vt",),
+    subphrase=dict(featuresBare="number", children="word"),
+    lex=dict(template="{voc_lex_utf8}", featuresBare="gloss", lexOcc="word"),
+    word=dict(featuresBare="lex:gloss", features="pdp vs vt"),
 )
 
 INTERFACE_DEFAULTS = dict()

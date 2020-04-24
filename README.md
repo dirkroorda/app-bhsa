@@ -8,7 +8,7 @@
 [![DOI](https://zenodo.org/badge/161639222.svg)](https://zenodo.org/badge/latestdoi/161639222)
 
 This is a
-[Text-Fabric](https://githubv.com/annotation/text-fabric) app
+[Text-Fabric](https://github.com/annotation/text-fabric) app
 for working with the
 [BHSA](https://etcbc.github.io/bhsa/) corpus: the Hebrew Bible.
 
