@@ -53,12 +53,12 @@ provenanceSpec:
   doi: 10.5281/zenodo.1007624
   moduleSpecs:
   - corpus: Phonetic Transcriptions
-    docUrl: '{nbUrl}/etcbc/phono/blob/master/programs/phono.ipynb'
+    docUrl: '{urlNb}/etcbc/phono/blob/master/programs/phono.ipynb'
     doi: 10.5281/zenodo.1007636
     org: etcbc
     repo: phono
   - corpus: Parallel Passages
-    docUrl: '{nbUrl}/{org}/parallels/blob/master/programs/parallels.ipynb'
+    docUrl: '{urlNb}/{org}/parallels/blob/master/programs/parallels.ipynb'
     doi: 10.5281/zenodo.1007642
     repo: parallels
   org: etcbc
@@ -67,47 +67,45 @@ provenanceSpec:
   webBase: https://shebanq.ancient-data.org/hebrew
   webHint: Show this on SHEBANQ
   webLang: la
-  webUrl: '{base}/text?book=<1>&chapter=<2>&verse=<3>&version={version}&mr=m&qw=q&tp=txt_p&tr=hb&wget=v&qget=v&nget=vt'
-  webUrlLex: '{base}/word?version={version}&id={lid}'
+  webUrl: '{webBase}/text?book=<1>&chapter=<2>&verse=<3>&version={version}&mr=m&qw=q&tp=txt_p&tr=hb&wget=v&qget=v&nget=vt'
+  webUrlLex: '{webBase}/word?version={version}&id=<lid>'
 typeDisplay:
   clause:
     children: clause_atom
-    features: typ
-    featuresBare: rela
+    label: '{typ} {rela}'
   clause_atom:
     children: phrase_atom
-    featuresBare: code
     level: 1
     super: clause
+    label: '{code}'
   half_verse:
     children: sentence_atom
-    template: '{label}'
+    label: '{label}'
     verselike: true
   lex:
     featuresBare: gloss
     lexOcc: word
     template: '{voc_lex_utf8}'
+    label: '{voc_lex_utf8}'
   phrase:
     children: phrase_atom
-    features: typ
-    featuresBare: function
+    label: '{typ} {function}'
   phrase_atom:
     children: word
-    features: typ
-    featuresBare: rela
     level: 1
     super: phrase
+    label: '{typ} {rela}'
   sentence:
     children: sentence_atom
-    featuresBare: number
+    label: '{number}'
   sentence_atom:
     children: clause_atom
-    featuresBare: number
     level: 1
     super: sentence
+    label: '{number}'
   subphrase:
     children: word
-    featuresBare: number
+    label: '{number}'
   verse:
     children: sentence_atom
   word:
