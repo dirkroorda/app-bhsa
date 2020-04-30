@@ -76,7 +76,7 @@ typeDisplay:
   clause_atom:
     children: phrase_atom
     level: 1
-    super: clause
+    chunkOf: clause
     label: '{code}'
   half_verse:
     children: sentence_atom
@@ -93,7 +93,7 @@ typeDisplay:
   phrase_atom:
     children: word
     level: 1
-    super: phrase
+    chunkOf: phrase
     label: '{typ} {rela}'
   sentence:
     children: sentence_atom
@@ -101,7 +101,7 @@ typeDisplay:
   sentence_atom:
     children: clause_atom
     level: 1
-    super: sentence
+    chunkOf: sentence
     label: '{number}'
   subphrase:
     children: word
