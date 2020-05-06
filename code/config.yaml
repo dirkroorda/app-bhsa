@@ -67,6 +67,7 @@ provenanceSpec:
   webBase: https://shebanq.ancient-data.org/hebrew
   webHint: Show this on SHEBANQ
   webLang: la
+  webLexId: true
   webUrl: '{webBase}/text?book=<1>&chapter=<2>&verse=<3>&version={version}&mr=m&qw=q&tp=txt_p&tr=hb&wget=v&qget=v&nget=vt'
   webUrlLex: '{webBase}/word?version={version}&id=<lid>'
 typeDisplay:
