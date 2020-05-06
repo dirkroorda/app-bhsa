@@ -73,15 +73,18 @@ typeDisplay:
   clause:
     children: clause_atom
     label: '{typ} {rela}'
+    style: ""
   clause_atom:
     children: phrase_atom
     level: 1
     chunkOf: clause
     label: '{code}'
+    style: ""
   half_verse:
     children: sentence_atom
     label: '{label}'
     verselike: true
+    style: ""
   lex:
     featuresBare: gloss
     lexOcc: word
@@ -90,22 +93,27 @@ typeDisplay:
   phrase:
     children: phrase_atom
     label: '{typ} {function}'
+    style: ""
   phrase_atom:
     children: word
     level: 1
     chunkOf: phrase
     label: '{typ} {rela}'
+    style: ""
   sentence:
     children: sentence_atom
     label: '{number}'
+    style: ""
   sentence_atom:
     children: clause_atom
     level: 1
     chunkOf: sentence
     label: '{number}'
+    style: ""
   subphrase:
     children: word
     label: '{number}'
+    style: ""
   verse:
     children: sentence_atom
   word:
