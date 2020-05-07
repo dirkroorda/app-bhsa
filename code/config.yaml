@@ -91,6 +91,7 @@ typeDisplay:
     lexOcc: word
     template: '{voc_lex_utf8}'
     label: '{voc_lex_utf8}'
+    style: orig
   phrase:
     children: phrase_atom
     label: '{typ} {function}'
