@@ -1,4 +1,4 @@
-apiVersion: 1
+apiVersion: 2
 dataDisplay:
   exampleSectionHtml: <code>Genesis 1:1</code> (use <a href="https://github.com/{org}/{repo}/blob/master/tf/{version}/book%40en.tf"
     target="_blank">English book names</a>)
@@ -72,17 +72,14 @@ provenanceSpec:
   webUrlLex: '{webBase}/word?version={version}&id=<lid>'
 typeDisplay:
   clause:
-    children: clause_atom
     label: '{typ} {rela}'
     style: ""
   clause_atom:
-    children: phrase_atom
     level: 1
-    chunkOf: clause
+    hidden: true
     label: '{code}'
     style: ""
   half_verse:
-    children: sentence_atom
     label: '{label}'
     verselike: true
     style: ""
@@ -93,31 +90,24 @@ typeDisplay:
     label: '{voc_lex_utf8}'
     style: orig
   phrase:
-    children: phrase_atom
     label: '{typ} {function}'
     style: ""
   phrase_atom:
-    children: word
     level: 1
-    chunkOf: phrase
+    hidden: true
     label: '{typ} {rela}'
     style: ""
   sentence:
-    children: sentence_atom
     label: '{number}'
     style: ""
   sentence_atom:
-    children: clause_atom
     level: 1
-    chunkOf: sentence
+    hidden: true
     label: '{number}'
     style: ""
   subphrase:
-    children: word
     label: '{number}'
     style: ""
-  verse:
-    children: sentence_atom
   word:
     features: pdp vs vt
     featuresBare: lex:gloss
