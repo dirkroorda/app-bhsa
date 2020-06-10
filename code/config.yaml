@@ -1,4 +1,4 @@
-apiVersion: 2
+apiVersion: 3
 dataDisplay:
   exampleSectionHtml: <code>Genesis 1:1</code> (use <a href="https://github.com/{org}/{repo}/blob/master/tf/{version}/book%40en.tf"
     target="_blank">English book names</a>)
@@ -80,6 +80,7 @@ typeDisplay:
     label: '{code}'
     style: ""
   half_verse:
+    hidden: true
     label: '{label}'
     verselike: true
     style: ""
@@ -106,6 +107,7 @@ typeDisplay:
     label: '{number}'
     style: ""
   subphrase:
+    hidden: true
     label: '{number}'
     style: ""
   word:
