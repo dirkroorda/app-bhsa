@@ -18,3 +18,11 @@ Get started with the
 ![shot](images/shot.png)
 
 ![jup](images/jup.png)
+
+There is also a search interface for the BHSA.
+It is online, but it works on your computer, in the browser.
+
+Just click
+[bhsa-search](https://annotation.github.io/app-bhsa/)
+and of you go.
+
