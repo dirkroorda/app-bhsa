@@ -1,0 +1,25 @@
+writing: hebrew
+
+data:
+  org: etcbc
+  repo: bhsa
+  rel: tf
+  version: "2017"
+  docUrl: https://«data.org».«ghPages»/«data.repo»/features/0_home/
+
+corpus:
+  text: Biblia Hebraica Stuttgartensia Amstelodamensis
+  url: "https://shebanq.ancient-data.org"
+  tip: SHEBANQ website
+
+author1:
+  text: Wido van Peursen
+  role: lead researcher
+  url: "https://research.vu.nl/en/persons/wido-van-peursen"
+  tip: lead researcher
+
+author2:
+  text: Dirk Roorda
+  role: data modeler
+  url: "https://pure.knaw.nl/portal/en/persons/dirk-roorda"
+  tip: data modeler

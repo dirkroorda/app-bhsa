@@ -1,0 +1,138 @@
+short: sentences, clauses, phrases in ETCBC transcription
+
+description: >-
+  <p>Syntactic structure search interface for <a id="corpus2link" href="#"></a>.</p>
+  <p>This search interface is by:</p>
+  <ul>
+      <li><a id="author2link" href="#"></a> («author2.role»)
+      <li><a id="author1link" href="#"></a> («author1.role»)
+  </ul>
+
+defaultSettings:
+  autoexec: true
+  nodeseq: true
+  exporthl: true
+  exportsr: true
+  multihl: true
+  simple: false
+
+layerSettings:
+  word:
+    description: Some words are affixed to others without intervening space.
+    layers:
+      lex:
+        afterDefault: ""
+        afterFeature: trailer
+        default: ¿
+        description: 'etcbc transcription of the lexemes'
+        feature: lex
+        pos: null
+        visible: true
+      pdp:
+        afterDefault: /
+        afterFeature: trailer
+        default: z
+        description: 'phrase-dependent part of speech'
+        feature: pdp
+        pos: null
+        visible: true
+      png:
+        afterDefault: /
+        afterFeature: trailer
+        default: z
+        description: 'person(123) number(sdp)  gender(mf) state(ace)'
+        feature: png
+        pos: null
+        visible: true
+      vb:
+        afterDefault: /
+        afterFeature: trailer
+        default: z
+        description: 'verbal stem and tense'
+        feature: vb
+        pos: null
+        visible: true
+  phrase_atom:
+    preFixed: "<"
+    afterFixed: ">"
+    description: Phrases may have gaps.
+    layers:
+      function:
+        default: -1
+        description: phrase function
+        ascend: phrase
+        feature: function
+        pos: null
+        visible: true
+      ptype:
+        default: -1
+        description: phrase type
+        feature: typ
+        pos: null
+        visible: false
+  clause_atom:
+    preFixed: "("
+    afterFixed: ")"
+    description: Clauses may have gaps.
+    layers:
+      ttype:
+        default: -1
+        description: text type
+        ascend: clause
+        feature: txt
+        pos: null
+        visible: false
+      ctype:
+        default: -1
+        description: clause type
+        feature: typ
+        pos: null
+        visible: false
+      rela:
+        default: -1
+        description: clause relation
+        ascend: clause
+        feature: rela
+        pos: null
+        visible: true
+  sentence_atom:
+    preFixed: "["
+    afterFixed: "]"
+    focus: true
+    description: Sentences may have gaps.
+  verse:
+    afterDefault: "\n"
+    description: Verses may split sentences.
+    layers:
+      number:
+        default: -1
+        description: verse number
+        feature: verse
+        pos: null
+        visible: true
+  chapter:
+    afterDefault: "\n"
+    description: Chapters.
+    layers:
+      number:
+        default: -1
+        description: chapter number
+        feature: chapter
+        pos: null
+        visible: true
+  book:
+    afterDefault: "\n"
+    description: Books.
+    layers:
+      book:
+        default: ¿
+        description: name of a book
+        feature: book@en
+        pos: null
+        visible: true
+      ref:
+        default: ¿
+        description: latin name of a book
+        feature: book
+        pos: null
+        visible: false
