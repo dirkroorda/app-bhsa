@@ -14,7 +14,7 @@ const configData = {
   }
  },
  "defs": {
-  "lsVersion": "v067@2021-05-11T18:07:26",
+  "lsVersion": "v068@2021-05-11T18:16:50",
   "dataset": "bhsa",
   "client": "structure",
   "org": "annotation",
