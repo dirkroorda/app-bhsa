@@ -14,7 +14,7 @@ const configData = {
   }
  },
  "defs": {
-  "lsVersion": "v068@2021-05-11T18:16:50",
+  "lsVersion": "v069@2021-05-11T23:01:48",
   "dataset": "bhsa",
   "client": "structure",
   "org": "annotation",
@@ -200,34 +200,22 @@ const configData = {
  },
  "focusType": "sentence",
  "ntypesinit": {
-  "book": 426585,
-  "chapter": 426624,
-  "lex": 1437403,
+  "word": 1,
+  "phrase": 904690,
+  "clause": 515654,
+  "sentence": 1235920,
   "verse": 1414190,
-  "half_verse": 606323,
-  "sentence": 1172209,
-  "sentence_atom": 1235920,
-  "clause": 427553,
-  "clause_atom": 515654,
-  "phrase": 651503,
-  "phrase_atom": 904690,
-  "subphrase": 1300406,
-  "word": 1
+  "chapter": 426624,
+  "book": 426585
  },
  "ntypessize": {
-  "book": 39,
-  "chapter": 929,
-  "lex": 9233,
+  "word": 426584,
+  "phrase": 267519,
+  "clause": 90669,
+  "sentence": 64486,
   "verse": 23213,
-  "half_verse": 45180,
-  "sentence": 63711,
-  "sentence_atom": 64486,
-  "clause": 88101,
-  "clause_atom": 90669,
-  "phrase": 253187,
-  "phrase_atom": 267519,
-  "subphrase": 113784,
-  "word": 426584
+  "chapter": 929,
+  "book": 39
  },
  "dtypeOf": {
   "phrase": "word",
@@ -248,6 +236,8 @@ const configData = {
  "visible": {
   "word": {
    "lex": true,
+   "phono": true,
+   "gloss": false,
    "pdp": true,
    "png": true,
    "vs": true,
@@ -262,6 +252,9 @@ const configData = {
    "ctype": false,
    "rela": true
   },
+  "sentence": {
+   "number": false
+  },
   "verse": {
    "number": true
   },
@@ -275,9 +268,9 @@ const configData = {
  },
  "levels": {
   "word": "words (some words do not have a space between them)",
-  "phrase": "Phrases may have gaps.",
-  "clause": "Clauses may have gaps.",
-  "sentence": "Sentences may have gaps.",
+  "phrase": "phrase atoms",
+  "clause": "clause atoms",
+  "sentence": "sentence atoms",
   "verse": "Verses may split sentences.",
   "chapter": "Chapters.",
   "book": "Books."
@@ -290,6 +283,20 @@ const configData = {
     "pos": "lex",
     "pattern": "",
     "description": "etcbc transcription of the lexemes"
+   },
+   "phono": {
+    "valueMap": null,
+    "tip": false,
+    "pos": "phono",
+    "pattern": "",
+    "description": "phonetic transliteration of full form"
+   },
+   "gloss": {
+    "valueMap": null,
+    "tip": false,
+    "pos": "gloss",
+    "pattern": "",
+    "description": "word by word gloss"
    },
    "pdp": {
     "valueMap": [
@@ -681,227 +688,55 @@ const configData = {
     "valueMap": [
      [
       "AdjP",
-      3547
+      1753
      ],
      [
       "AdvP",
-      11546
-     ],
-     [
-      "AjCl",
-      2870
+      5665
      ],
      [
       "CP",
-      106259
-     ],
-     [
-      "CPen",
-      2580
+      52474
      ],
      [
       "DPrP",
-      1580
-     ],
-     [
-      "Defc",
-      2568
-     ],
-     [
-      "Ellp",
-      5556
+      790
      ],
      [
       "IPrP",
-      1593
-     ],
-     [
-      "InfA",
-      602
-     ],
-     [
-      "InfC",
-      13038
+      796
      ],
      [
       "InjP",
-      3744
+      1872
      ],
      [
       "InrP",
-      2582
-     ],
-     [
-      "MSyn",
-      1934
+      1291
      ],
      [
       "NP",
-      88317
+      40818
      ],
      [
       "NegP",
-      13486
-     ],
-     [
-      "NmCl",
-      22752
+      6743
      ],
      [
       "PP",
-      120040
+      57464
      ],
      [
       "PPrP",
-      8841
+      4379
      ],
      [
       "PrNP",
-      21121
-     ],
-     [
-      "Ptcp",
-      10864
-     ],
-     [
-      "Reop",
-      20
+      10117
      ],
      [
       "VP",
-      138050
-     ],
-     [
-      "Voct",
-      3262
-     ],
-     [
-      "WIm0",
-      1773
-     ],
-     [
-      "WImX",
-      6
-     ],
-     [
-      "WQt0",
-      10206
-     ],
-     [
-      "WQtX",
-      2630
-     ],
-     [
-      "WXIm",
-      82
-     ],
-     [
-      "WXQt",
-      2719
-     ],
-     [
-      "WXYq",
-      2615
-     ],
-     [
-      "WYq0",
-      2380
-     ],
-     [
-      "WYqX",
-      486
-     ],
-     [
-      "Way0",
-      18110
-     ],
-     [
-      "WayX",
-      11760
-     ],
-     [
-      "WxI0",
-      153
-     ],
-     [
-      "WxQ0",
-      3011
-     ],
-     [
-      "WxQX",
-      919
-     ],
-     [
-      "WxY0",
-      4834
-     ],
-     [
-      "WxYX",
-      826
-     ],
-     [
-      "XImp",
-      23
-     ],
-     [
-      "XPos",
-      52
-     ],
-     [
-      "XQtl",
-      2727
-     ],
-     [
-      "XYqt",
-      2836
-     ],
-     [
-      "ZIm0",
-      6000
-     ],
-     [
-      "ZImX",
-      67
-     ],
-     [
-      "ZQt0",
-      2993
-     ],
-     [
-      "ZQtX",
-      1587
-     ],
-     [
-      "ZYq0",
-      3099
-     ],
-     [
-      "ZYqX",
-      1182
-     ],
-     [
-      "xIm0",
-      504
-     ],
-     [
-      "xImX",
-      6
-     ],
-     [
-      "xQt0",
-      9702
-     ],
-     [
-      "xQtX",
-      5534
-     ],
-     [
-      "xYq0",
-      10828
-     ],
-     [
-      "xYqX",
-      3074
+      69025
      ]
     ],
     "tip": false,
@@ -1590,228 +1425,172 @@ const configData = {
    "ctype": {
     "valueMap": [
      [
-      "AdjP",
-      3547
-     ],
-     [
-      "AdvP",
-      11546
-     ],
-     [
       "AjCl",
-      2870
-     ],
-     [
-      "CP",
-      106259
+      1435
      ],
      [
       "CPen",
-      2580
-     ],
-     [
-      "DPrP",
-      1580
-     ],
-     [
-      "Defc",
-      2568
+      1290
      ],
      [
       "Ellp",
-      5556
-     ],
-     [
-      "IPrP",
-      1593
+      2778
      ],
      [
       "InfA",
-      602
+      301
      ],
      [
       "InfC",
-      13038
-     ],
-     [
-      "InjP",
-      3744
-     ],
-     [
-      "InrP",
-      2582
+      6519
      ],
      [
       "MSyn",
-      1934
-     ],
-     [
-      "NP",
-      88317
-     ],
-     [
-      "NegP",
-      13486
+      967
      ],
      [
       "NmCl",
-      22752
-     ],
-     [
-      "PP",
-      120040
-     ],
-     [
-      "PPrP",
-      8841
-     ],
-     [
-      "PrNP",
-      21121
+      11376
      ],
      [
       "Ptcp",
-      10864
+      5432
      ],
      [
       "Reop",
-      20
-     ],
-     [
-      "VP",
-      138050
+      10
      ],
      [
       "Voct",
-      3262
+      1631
      ],
      [
       "WIm0",
-      1773
+      889
      ],
      [
       "WImX",
-      6
+      3
      ],
      [
       "WQt0",
-      10206
+      5092
      ],
      [
       "WQtX",
-      2630
+      1326
      ],
      [
       "WXIm",
-      82
+      50
      ],
      [
       "WXQt",
-      2719
+      1392
      ],
      [
       "WXYq",
-      2615
+      1384
      ],
      [
       "WYq0",
-      2380
+      1187
      ],
      [
       "WYqX",
-      486
+      246
      ],
      [
       "Way0",
-      18110
+      9040
      ],
      [
       "WayX",
-      11760
+      5895
      ],
      [
       "WxI0",
-      153
+      83
      ],
      [
       "WxQ0",
-      3011
+      1542
      ],
      [
       "WxQX",
-      919
+      490
      ],
      [
       "WxY0",
-      4834
+      2473
      ],
      [
       "WxYX",
-      826
+      428
      ],
      [
       "XImp",
-      23
+      12
      ],
      [
       "XPos",
-      52
+      26
      ],
      [
       "XQtl",
-      2727
+      1395
      ],
      [
       "XYqt",
-      2836
+      1506
      ],
      [
       "ZIm0",
-      6000
+      2960
      ],
      [
       "ZImX",
-      67
+      36
      ],
      [
       "ZQt0",
-      2993
+      1346
      ],
      [
       "ZQtX",
-      1587
+      758
      ],
      [
       "ZYq0",
-      3099
+      1278
      ],
      [
       "ZYqX",
-      1182
+      571
      ],
      [
       "xIm0",
-      504
+      271
      ],
      [
       "xImX",
-      6
+      3
      ],
      [
       "xQt0",
-      9702
+      4880
      ],
      [
       "xQtX",
-      5534
+      2793
      ],
      [
       "xYq0",
-      10828
+      5435
      ],
      [
       "xYqX",
-      3074
+      1572
      ]
     ],
     "tip": false,
@@ -1826,10 +1605,6 @@ const configData = {
       6414
      ],
      [
-      "Appo",
-      5887
-     ],
-     [
       "Attr",
       6352
      ],
@@ -1842,24 +1617,16 @@ const configData = {
       3639
      ],
      [
-      "Link",
-      1311
-     ],
-     [
       "NA",
-      630012
+      67311
      ],
      [
       "Objc",
       1324
      ],
      [
-      "Para",
-      1553
-     ],
-     [
       "PrAd",
-      257
+      12
      ],
      [
       "PreC",
@@ -1871,53 +1638,34 @@ const configData = {
      ],
      [
       "Resu",
-      1618
+      1298
      ],
      [
       "RgRc",
       394
      ],
      [
-      "Sfxs",
-      74
-     ],
-     [
       "Spec",
-      5579
+      72
      ],
      [
       "Subj",
       505
-     ],
-     [
-      "adj",
-      4180
-     ],
-     [
-      "atr",
-      3113
-     ],
-     [
-      "dem",
-      1847
-     ],
-     [
-      "mod",
-      937
-     ],
-     [
-      "par",
-      11932
-     ],
-     [
-      "rec",
-      34883
      ]
     ],
     "tip": false,
     "pos": "ctype",
     "pattern": "",
     "description": "clause relation"
+   }
+  },
+  "sentence": {
+   "number": {
+    "valueMap": null,
+    "tip": false,
+    "pos": "number",
+    "pattern": "",
+    "description": "sentence atom number within the book"
    }
   },
   "verse": {

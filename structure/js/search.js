@@ -1,14 +1,6 @@
 /*eslint-env jquery*/
 
-import {
-  SEARCH,
-  MAXINPUT,
-  NUMBER,
-  QUWINDOW,
-  RESULTCOL,
-  TIP,
-  htmlEsc,
-} from "./defs.js"
+import { SEARCH, MAXINPUT, NUMBER, QUWINDOW, RESULTCOL, TIP, htmlEsc } from "./defs.js"
 
 export class SearchProvider {
   /* SEARCH EXECUTION
