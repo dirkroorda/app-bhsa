@@ -1,27 +1,32 @@
 import sys
+import collections
 
 from tf.convert.recorder import Recorder
 
 
-def makeLegends(maker):
-    pass
+combiV = None
+combiFreqList = None
+
+padFeatures = set("""
+    pdp
+    png
+    vs
+    vt
+    typ
+    function
+    rela
+""".strip().split())
 
 
-def record(maker):
-    A = maker.A
+def combiFeatures(A):
     api = A.api
     F = api.F
-    Fs = api.Fs
-    L = api.L
 
-    C = maker.C
-    layerSettings = C.layerSettings
+    global combiV
+    global combiFreqList
 
-    clientConfig = maker.clientConfig
-    typesLower = clientConfig["typesLower"]
-
-    A.indent(reset=True)
-    A.info("preparing ... ")
+    combiV = {}
+    combiFreqList = {}
 
     def orNull(x):
         return "" if x is None or x == "none" or x == "NA" or x == "unknown" else x
@@ -35,6 +40,7 @@ def record(maker):
         return "" if logical == "" else logical[0]
 
     png = {}
+    pngFreq = collections.Counter()
 
     for w in F.otype.s("word"):
         combi = (
@@ -42,13 +48,95 @@ def record(maker):
         )
         if combi:
             png[w] = combi
+            pngFreq[combi] += 1
 
-    vb = {}
+    combiV["png"] = png
+    combiFreqList["png"] = pngFreq.items()
 
-    for w in F.otype.s("word"):
-        combi = f"{orNull(F.vs.v(w))}-{orNull(F.vt.v(w))}"
-        if combi and combi != "-":
-            vb[w] = combi
+
+def makeLegends(maker):
+    A = maker.A
+    if not combiV:
+        combiFeatures(A)
+
+    api = A.api
+    Fs = api.Fs
+
+    C = maker.C
+    layerSettings = C.layerSettings
+
+    for (level, layer) in (
+        ("word", "pdp"),
+        ("word", "png"),
+        ("word", "vs"),
+        ("word", "vt"),
+        ("phrase", "function"),
+        ("phrase", "ptype"),
+        ("clause", "rela"),
+        ("clause", "ctype"),
+        ("clause", "ttype"),
+    ):
+
+        info = layerSettings[level]["layers"][layer]
+        feature = info["feature"]
+
+        freqList = (
+            combiFreqList["png"]
+            if feature == "png"
+            else Fs(feature).freqList()
+        )
+        info["legend"] = sorted(freqList)
+
+
+def record(maker):
+    A = maker.A
+    if not combiV:
+        combiFeatures(A)
+
+    api = A.api
+    F = api.F
+    Fs = api.Fs
+    L = api.L
+
+    C = maker.C
+    layerSettings = C.layerSettings
+
+    clientConfig = maker.clientConfig
+    typesLower = clientConfig["typesLower"]
+    lingLower = dict(
+        sentence=["sentence", "clause", "phrase"],
+        clause=["clause", "phrase"],
+        phrase=["phrase"],
+    )
+    lingBoundary = {
+        False: {
+            True: dict(
+                sentence="┣",
+                clause="┏",
+                phrase="◀",
+            ),
+            False: dict(
+                sentence="┫\n",
+                clause="┓",
+                phrase="▶",
+            ),
+        },
+        True: {
+            True: dict(
+                sentence="├",
+                clause="┌",
+                phrase="◁",
+            ),
+            False: dict(
+                sentence="┤",
+                clause="┐",
+                phrase="▷",
+            ),
+        },
+    }
+
+    A.indent(reset=True)
+    A.info("preparing ... ")
 
     A.info("start recording")
 
@@ -58,47 +146,45 @@ def record(maker):
     recorders = {}
     accumulators = {}
 
-    for (nType, typeInfo) in layerSettings.items():
+    for (level, typeInfo) in layerSettings.items():
         ti = typeInfo.get("layers", None)
         if ti is None:
             continue
 
-        texts[nType] = {name: None for name in ti}
-        positions[nType] = {name: None for name in ti if ti[name]["pos"] is None}
-        recorders[nType] = {
-            name: Recorder(api) for name in ti if ti[name]["pos"] is None
+        texts[level] = {layer: None for layer in ti}
+        positions[level] = {layer: None for layer in ti if ti[layer]["pos"] is None}
+        recorders[level] = {
+            layer: Recorder(api) for layer in ti if ti[layer]["pos"] is None
         }
-        accumulators[nType] = {name: [] for name in ti if ti[name]["pos"] is not None}
+        accumulators[level] = {layer: [] for layer in ti if ti[layer]["pos"] is not None}
 
-    def addValue(node):
+    def addValue(node, use=None):
         returnValue = None
 
-        nType = F.otype.v(node)
-        typeInfo = layerSettings[nType]
+        level = use or F.otype.v(node)
+        typeInfo = layerSettings[level]
         theseLayers = typeInfo.get("layers", {})
 
         first = True
 
-        for name in theseLayers:
-            info = theseLayers[name]
+        for layer in theseLayers:
+            info = theseLayers[layer]
             descend = info.get("descend", False)
             ascend = info.get("ascend", False)
             feature = info.get("feature", None)
-            preFeature = info.get("preFeature", None)
-            preDefault = info.get("preDefault", None)
-            preFixed = info.get("preFixed", None)
             afterFeature = info.get("afterFeature", None)
             afterDefault = info.get("afterDefault", None)
-            afterFixed = info.get("afterFixed", None)
             vMap = info.get("legend", None)
+            if type(vMap) is not dict:
+                vMap = None
             default = info["default"]
             pos = info["pos"]
+
+            png = combiV["png"]
 
             featureFunc = (
                 (lambda n: png.get(n, None))
                 if feature == "png"
-                else (lambda n: vb.get(n, None))
-                if feature == "vb"
                 else Fs(feature).v
             )
 
@@ -120,27 +206,20 @@ def record(maker):
                 else:
                     value = value or default
 
-            preVal = ""
-            if preFeature is not None:
-                preVal = Fs(preFeature).v(node)
-                if not preVal and preDefault:
-                    preVal = preDefault
-            if preFixed is not None:
-                preVal = f"{preFixed}{preVal}"
+            if feature in padFeatures:
+                value = f"{value:<4}"
 
             afterVal = ""
             if afterFeature is not None:
                 afterVal = Fs(afterFeature).v(node)
-                if not afterVal and afterDefault:
-                    afterVal = afterDefault
-            if afterFixed is not None:
-                afterVal = f"{afterVal}{afterFixed}"
-            value = f"{preVal}{value}{afterVal}"
+            if not afterVal and afterDefault:
+                afterVal = afterDefault
+            value = f"{value}{afterVal}"
 
             if pos is None:
-                recorders[nType][name].add(value)
+                recorders[level][layer].add(value)
             else:
-                accumulators[nType][name].append(value)
+                accumulators[level][layer].append(value)
 
             if first:
                 returnValue = value
@@ -148,105 +227,100 @@ def record(maker):
 
         return returnValue
 
-    def outerStart(nType, inner):
-        outer = L.u(inner, otype=nType)[0]
+    def lingStart(level, inner):
+        outer = L.u(inner, otype=level)[0]
         outerFirst = L.d(outer, otype="word")[0]
         innerFirst = L.d(inner, otype="word")[0]
-        if innerFirst == outerFirst:
-            addHere(f"{nType}_atom", "{")
+        addLing(level, innerFirst != outerFirst, True)
 
-    def outerEnd(nType, inner, nl=False):
-        outer = L.u(inner, otype=nType)[0]
+    def lingEnd(level, inner):
+        outer = L.u(inner, otype=level)[0]
         outerLast = L.d(outer, otype="word")[-1]
         innerLast = L.d(inner, otype="word")[-1]
-        if innerLast == outerLast:
-            addHere(f"{nType}_atom", "}")
-            if nl:
-                addAll(f"{nType}_atom", "\n")
+        addLing(level, innerLast != outerLast, False)
 
-    def addPreValue(node):
-        nType = F.otype.v(node)
-        typeInfo = layerSettings[nType]
-        preFeature = typeInfo.get("preFeature", None)
-        preDefault = typeInfo.get("preDefault", None)
-        preFixed = typeInfo.get("preFixed", None)
-        value = ""
-        if preFeature is not None:
-            value = Fs(preFeature).v(node)
-        if preDefault is not None:
-            if not value:
-                value = preDefault
-            if value:
-                addAll(nType, value)
-        if preFixed:
-            addHere(nType, preFixed)
-
-    def addAfterValue(node):
-        nType = F.otype.v(node)
-        typeInfo = layerSettings[nType]
-        afterFeature = typeInfo.get("afterFeature", None)
-        afterDefault = typeInfo.get("afterDefault", None)
-        afterFixed = typeInfo.get("afterFixed", None)
-        if afterFixed:
-            addHere(nType, afterFixed)
-        value = ""
-        if afterFeature is not None:
-            value = Fs(afterFeature).v(node)
-        if afterDefault is not None:
-            if not value:
-                value = afterDefault
-            if value:
-                addAll(nType, value)
-
-    def addAll(nType, value):
-        lowerTypes = typesLower[nType]
-        for nt in lowerTypes:
-            if nt in recorders:
-                for x in recorders[nt].values():
+    def addLing(level, isAtom, isStart):
+        value = lingBoundary[isAtom][isStart][level]
+        for lType in lingLower.get(level):
+            if lType in recorders:
+                for (lr, x) in recorders[lType].items():
                     x.add(value)
-            if nt in accumulators:
-                for x in accumulators[nt].values():
+            if lType in accumulators:
+                for x in accumulators[lType].values():
                     x.append(value)
 
-    def addHere(nType, value):
-        if nType in recorders:
-            for x in recorders[nType].values():
+    def addAfterValue(node):
+        level = F.otype.v(node)
+        typeInfo = layerSettings[level]
+        value = typeInfo.get("afterDefault", None)
+        if value:
+            addLevel(level, value)
+
+    def addAfterWord(node):
+        if F.trailer.v(node).startswith("00"):
+            addLevel("word", "\n")
+
+    def addAll(level, value):
+        lowerTypes = typesLower[level]
+        for lType in lowerTypes:
+            if lType in recorders:
+                for x in recorders[lType].values():
+                    x.add(value)
+            if lType in accumulators:
+                for x in accumulators[lType].values():
+                    x.append(value)
+
+    def addLevel(level, value):
+        if level in recorders:
+            for x in recorders[level].values():
                 x.add(value)
-        if nType in accumulators:
-            for x in accumulators[nType].values():
+        if level in accumulators:
+            for x in accumulators[level].values():
                 x.append(value)
 
+    def addLayer(level, layer, value):
+        if level in recorders:
+            if layer in recorders[level]:
+                recorders[level][layer].add(value)
+        if level in accumulators:
+            if layer in accumulators[level]:
+                accumulators[level][layer].append(value)
+
     def deliverAll():
-        for (nType, typeInfo) in recorders.items():
-            for (name, x) in typeInfo.items():
-                texts[nType][name] = x.text()
+        A.info("wrap recorders for delivery")
+        for (level, typeInfo) in recorders.items():
+            A.info(f"\t{level}")
+            for (layer, x) in typeInfo.items():
+                A.info(f"\t\t{layer}")
+                texts[level][layer] = x.text()
                 # here we are going to use that there is at most one node per node type
                 # that corresponds to a character position
-                positions[nType][name] = [
-                    tuple(nodes)[0] if nodes else None for nodes in x.positions()
-                ]
+                positions[level][layer] = x.positions(simple=True)
 
-        for (nType, typeInfo) in accumulators.items():
-            for (name, x) in typeInfo.items():
-                texts[nType][name] = "".join(x)
+        A.info("wrap accumulators for delivery")
+        for (level, typeInfo) in accumulators.items():
+            A.info(f"\t{level}")
+            for (layer, x) in typeInfo.items():
+                A.info(f"\t\t{layer}")
+                texts[level][layer] = "".join(x)
 
     def startNode(node):
         # we have organized recorders by node type
         # we only record nodes of matching type in recorders
 
-        nType = F.otype.v(node)
+        level = F.otype.v(node)
 
-        if nType in recorders:
-            for rec in recorders[nType].values():
+        if level in recorders:
+            for rec in recorders[level].values():
                 rec.start(node)
 
     def endNode(node):
         # we have organized recorders by node type
         # we only record nodes of matching type in recorders
-        nType = F.otype.v(node)
+        level = F.otype.v(node)
 
-        if nType in recorders:
-            for rec in recorders[nType].values():
+        if level in recorders:
+            for rec in recorders[level].values():
                 rec.end(node)
 
     # note the `up[n] = m` statements below:
@@ -254,8 +328,8 @@ def record(maker):
 
     for (i, book) in enumerate(F.otype.s("book")):
         startNode(book)
-        name = addValue(book)
-        sys.stdout.write("\r" + f"{i + 1:>3} {name:<80}")
+        title = addValue(book)
+        sys.stdout.write("\r" + f"{i + 1:>3} {title:<80}")
 
         for chapter in L.d(book, otype="chapter"):
             up[chapter] = book
@@ -273,29 +347,26 @@ def record(maker):
             for sentence in L.d(chapter, otype="sentence_atom"):
                 up[sentence] = verse
                 startNode(sentence)
-                outerStart("sentence", sentence)
-                addPreValue(sentence)
-                addValue(sentence)
+                lingStart("sentence", sentence)
+                addValue(sentence, use="sentence")
 
                 for clause in L.d(sentence, otype="clause_atom"):
                     up[clause] = sentence
                     startNode(clause)
-                    outerStart("clause", clause)
-                    addPreValue(clause)
-                    addValue(clause)
+                    lingStart("clause", clause)
+                    addValue(clause, use="clause")
 
                     for phrase in L.d(clause, otype="phrase_atom"):
                         up[phrase] = clause
                         startNode(phrase)
-                        outerStart("phrase", phrase)
-                        addPreValue(phrase)
-                        addValue(phrase)
+                        lingStart("phrase", phrase)
+                        addValue(phrase, use="phrase")
 
                         for word in L.d(phrase, otype="word"):
                             up[word] = phrase
                             startNode(word)
                             addValue(word)
-                            addAfterValue(word)
+                            addAfterWord(word)
                             endNode(word)
                             if word == endVerse:
                                 addAfterValue(verse)
@@ -307,23 +378,19 @@ def record(maker):
                                     startNode(verse)
                                     addValue(verse)
 
-                        addAfterValue(phrase)
-                        outerEnd("phrase", phrase)
+                        lingEnd("phrase", phrase)
                         endNode(phrase)
-                    addAfterValue(clause)
-                    outerEnd("clause", clause, nl=True)
+                    lingEnd("clause", clause)
                     endNode(clause)
-                addAfterValue(sentence)
-                outerEnd("sentence", sentence)
+                lingEnd("sentence", sentence)
                 endNode(sentence)
             addAfterValue(chapter)
             endNode(chapter)
         addAfterValue(book)
         endNode(book)
 
-    deliverAll()
-
     sys.stdout.write("\n")
+    deliverAll()
 
     data = dict(
         texts=texts,

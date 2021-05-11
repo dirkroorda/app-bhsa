@@ -16,12 +16,30 @@ defaultSettings:
   multihl: true
   simple: false
 
+defaultFlags:
+  i: false
+  m: true
+  s: false
+
+keyboard:
+  '┣': start of sentence
+  '┫': end of sentence
+  '├': start of sentence atom
+  '┤': end of sentence atom
+  '┏': start of clause
+  '┓': end of clause
+  '┌': start of clause atom
+  '┐': end of clause atom
+  '◀': start of phrase
+  '▶': end of phrase
+  '◁': start of phrase atom
+  '▷': end of phrase atom
+
 layerSettings:
   word:
-    description: Some words are affixed to others without intervening space.
+    description: words (some words do not have a space between them)
     layers:
       lex:
-        afterDefault: ""
         afterFeature: trailer
         default: ¿
         description: 'etcbc transcription of the lexemes'
@@ -29,50 +47,50 @@ layerSettings:
         pos: null
         visible: true
       pdp:
-        afterDefault: /
-        afterFeature: trailer
+        afterDefault: " "
         default: z
         description: 'phrase-dependent part of speech'
         feature: pdp
         pos: null
         visible: true
       png:
-        afterDefault: /
-        afterFeature: trailer
+        afterDefault: " "
         default: z
         description: 'person(123) number(sdp)  gender(mf) state(ace)'
         feature: png
-        pos: null
+        pos: pdp
         visible: true
-      vb:
-        afterDefault: /
-        afterFeature: trailer
+      vs:
+        afterDefault: " "
         default: z
-        description: 'verbal stem and tense'
-        feature: vb
-        pos: null
+        description: 'verbal stem'
+        feature: vs
+        pos: pdp
         visible: true
-  phrase_atom:
-    preFixed: "<"
-    afterFixed: ">"
+      vt:
+        afterDefault: " "
+        default: z
+        description: 'verbal tense'
+        feature: vt
+        pos: pdp
+        visible: true
+  phrase:
     description: Phrases may have gaps.
     layers:
-      function:
-        default: -1
-        description: phrase function
-        ascend: phrase
-        feature: function
-        pos: null
-        visible: true
       ptype:
         default: -1
         description: phrase type
         feature: typ
         pos: null
         visible: false
-  clause_atom:
-    preFixed: "("
-    afterFixed: ")"
+      function:
+        default: -1
+        description: phrase function
+        ascend: phrase
+        feature: function
+        pos: ptype
+        visible: true
+  clause:
     description: Clauses may have gaps.
     layers:
       ttype:
@@ -93,15 +111,13 @@ layerSettings:
         description: clause relation
         ascend: clause
         feature: rela
-        pos: null
+        pos: ctype
         visible: true
-  sentence_atom:
-    preFixed: "["
-    afterFixed: "]"
+  sentence:
     focus: true
     description: Sentences may have gaps.
   verse:
-    afterDefault: "\n"
+    afterDefault: " "
     description: Verses may split sentences.
     layers:
       number:
