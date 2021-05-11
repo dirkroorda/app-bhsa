@@ -26,3 +26,4 @@ Just click
 [bhsa-search](https://annotation.github.io/app-bhsa/)
 and off you go.
 
+![ls](ls.png)
