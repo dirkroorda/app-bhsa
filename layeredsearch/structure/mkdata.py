@@ -83,7 +83,7 @@ def makeLegends(maker):
         freqList = (
             combiFreqList["png"]
             if feature == "png"
-            else Fs(feature).freqList()
+            else Fs(feature).freqList(nodeTypes={level})
         )
         info["legend"] = sorted(freqList)
 
@@ -304,20 +304,20 @@ def record(maker):
                 A.info(f"\t\t{layer}")
                 texts[level][layer] = "".join(x)
 
-    def startNode(node):
+    def startNode(node, asType=None):
         # we have organized recorders by node type
         # we only record nodes of matching type in recorders
 
-        level = F.otype.v(node)
+        level = asType or F.otype.v(node)
 
         if level in recorders:
             for rec in recorders[level].values():
                 rec.start(node)
 
-    def endNode(node):
+    def endNode(node, asType=None):
         # we have organized recorders by node type
         # we only record nodes of matching type in recorders
-        level = F.otype.v(node)
+        level = asType or F.otype.v(node)
 
         if level in recorders:
             for rec in recorders[level].values():
@@ -346,19 +346,19 @@ def record(maker):
 
             for sentence in L.d(chapter, otype="sentence_atom"):
                 up[sentence] = verse
-                startNode(sentence)
+                startNode(sentence, asType="sentence")
                 lingStart("sentence", sentence)
                 addValue(sentence, use="sentence")
 
                 for clause in L.d(sentence, otype="clause_atom"):
                     up[clause] = sentence
-                    startNode(clause)
+                    startNode(clause, asType="clause")
                     lingStart("clause", clause)
                     addValue(clause, use="clause")
 
                     for phrase in L.d(clause, otype="phrase_atom"):
                         up[phrase] = clause
-                        startNode(phrase)
+                        startNode(phrase, asType="phrase")
                         lingStart("phrase", phrase)
                         addValue(phrase, use="phrase")
 
@@ -379,11 +379,11 @@ def record(maker):
                                     addValue(verse)
 
                         lingEnd("phrase", phrase)
-                        endNode(phrase)
+                        endNode(phrase, asType="phrase")
                     lingEnd("clause", clause)
-                    endNode(clause)
+                    endNode(clause, asType="clause")
                 lingEnd("sentence", sentence)
-                endNode(sentence)
+                endNode(sentence, asType="sentence")
             addAfterValue(chapter)
             endNode(chapter)
         addAfterValue(book)

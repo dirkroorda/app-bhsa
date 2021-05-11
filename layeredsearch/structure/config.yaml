@@ -42,14 +42,29 @@ layerSettings:
       lex:
         afterFeature: trailer
         default: ¿
-        description: 'etcbc transcription of the lexemes'
+        description: etcbc transcription of the lexemes
         feature: lex
         pos: null
         visible: true
+      phono:
+        afterFeature: phono_trailer
+        default: ¿
+        description: phonetic transliteration of full form
+        feature: phono
+        pos: null
+        visible: true
+      gloss:
+        afterDefault: " "
+        default: ¿
+        description: word by word gloss
+        ascend: lex
+        feature: gloss
+        pos: null
+        visible: false
       pdp:
         afterDefault: " "
         default: z
-        description: 'phrase-dependent part of speech'
+        description: phrase-dependent part of speech
         feature: pdp
         pos: null
         visible: true
@@ -63,23 +78,25 @@ layerSettings:
       vs:
         afterDefault: " "
         default: z
-        description: 'verbal stem'
+        description: verbal stem
         feature: vs
         pos: pdp
         visible: true
       vt:
         afterDefault: " "
         default: z
-        description: 'verbal tense'
+        description: verbal tense
         feature: vt
         pos: pdp
         visible: true
   phrase:
-    description: Phrases may have gaps.
+    nType: phrase_atom
+    description: phrase atoms
     layers:
       ptype:
         default: -1
         description: phrase type
+        ascend: phrase
         feature: typ
         pos: null
         visible: false
@@ -91,7 +108,8 @@ layerSettings:
         pos: ptype
         visible: true
   clause:
-    description: Clauses may have gaps.
+    nType: clause_atom
+    description: clause atoms
     layers:
       ttype:
         default: -1
@@ -103,6 +121,7 @@ layerSettings:
       ctype:
         default: -1
         description: clause type
+        ascend: clause
         feature: typ
         pos: null
         visible: false
@@ -114,8 +133,16 @@ layerSettings:
         pos: ctype
         visible: true
   sentence:
+    nType: sentence_atom
     focus: true
-    description: Sentences may have gaps.
+    description: sentence atoms
+    layers:
+      number:
+        default: -1
+        description: sentence atom number within the book
+        feature: number
+        pos: null
+        visible: false
   verse:
     afterDefault: " "
     description: Verses may split sentences.
