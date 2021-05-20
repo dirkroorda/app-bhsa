@@ -1,3 +1,7 @@
+linkLevelMin: 1
+linkLevelMax: 3
+memSavingMethod: 1
+
 short: sentences, clauses, phrases in ETCBC transcription
 
 description: >-
