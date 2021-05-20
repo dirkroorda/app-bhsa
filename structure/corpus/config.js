@@ -1,4 +1,5 @@
 const configData = {
+ "memSavingMethod": 1,
  "mainConfig": {
   "description": {
    "simple": "<div id=\"title\">bhsa-structure search</div>",
@@ -14,7 +15,7 @@ const configData = {
   }
  },
  "defs": {
-  "lsVersion": "v069@2021-05-11T23:01:48",
+  "lsVersion": "v072@2021-05-20T14:28:20",
   "dataset": "bhsa",
   "client": "structure",
   "org": "annotation",

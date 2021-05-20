@@ -444,8 +444,10 @@ class ConfigProvider {
       defaultSettings,
       defaultFlags,
       keyboard,
+      memSavingMethod,
     } = configData
     this.lsVersion = lsVersion
+    this.memSavingMethod = memSavingMethod
     this.org = org
     this.repo = repo
     this.dataset = dataset
@@ -480,14 +482,16 @@ class ConfigProvider {
 
 
 class CorpusProvider {
-  deps({ Log }) {
+  deps({ Log, Config }) {
+    this.Config = Config
     this.Log = Log
     this.tell = Log.tell
   }
   async later() {
-    this.links = corpusData.links
-    this.texts = corpusData.texts
-    this.positions = corpusData.positions
+    const { links, texts, posinfo } = corpusData
+    this.links = links
+    this.texts = texts
+    this.posinfo = posinfo
     await this.warmUpData()
   }
   async warmUpData() {
@@ -530,29 +534,62 @@ class CorpusProvider {
     this.down = down
   }
   async positionMaps() {
-    const { Log, positions } = this
-    const iPositions = {}
-    for (const [nType, tpInfo] of Object.entries(positions)) {
-      for (const [layer, pos] of Object.entries(tpInfo)) {
-        await Log.placeProgress(`mapping ${nType}-${layer}`)
-        const iPos = new Map()
-        for (let i = 0; i < pos.length; i++) {
-          const node = pos[i]
-          if (node == null) {
-            continue
+    const {
+      Log,
+      Config: { memSavingMethod },
+      posinfo,
+    } = this
+    if (memSavingMethod == 0) {
+      this.positions = posinfo
+      const iPositions = {}
+      for (const [nType, tpInfo] of Object.entries(posinfo)) {
+        for (const [layer, pos] of Object.entries(tpInfo)) {
+          await Log.placeProgress(`mapping ${nType}-${layer}`)
+          const iPos = new Map()
+          for (let i = 0; i < pos.length; i++) {
+            const node = pos[i]
+            if (node == null) {
+              continue
+            }
+            if (!iPos.has(node)) {
+              iPos.set(node, [])
+            }
+            iPos.get(node).push(i)
           }
-          if (!iPos.has(node)) {
-            iPos.set(node, [])
+          if (iPositions[nType] == null) {
+            iPositions[nType] = {}
           }
-          iPos.get(node).push(i)
+          iPositions[nType][layer] = iPos
         }
-        if (iPositions[nType] == null) {
-          iPositions[nType] = {}
-        }
-        iPositions[nType][layer] = iPos
       }
+      this.iPositions = iPositions
     }
-    this.iPositions = iPositions
+    else if (memSavingMethod == 1) {
+      this.iPositions = posinfo
+      const positions = {}
+      for (const [nType, tpInfo] of Object.entries(posinfo)) {
+        for (const [layer, iPos] of Object.entries(tpInfo)) {
+          await Log.placeProgress(`mapping ${nType}-${layer}`)
+          const afterLastPos = iPos[iPos.length - 1]
+          const offset = iPos[0]
+          const buffer = new ArrayBuffer(32 * afterLastPos)
+          const pos = new Uint32Array(buffer)
+          for (let i = 1; i < iPos.length - 1; i++) {
+            const node = offset + i
+            const start = iPos[i]
+            const end = iPos[i + 1]
+            for (let t = start; t < end; t++) {
+              pos[t] = node
+            }
+          }
+          if (positions[nType] == null) {
+            positions[nType] = {}
+          }
+          positions[nType][layer] = pos
+        }
+      }
+      this.positions = positions
+    }
   }
 }
 
@@ -1817,6 +1854,19 @@ class MemProvider {
 
 
 
+const getTextRange = (memSavingMethod, iPos, node) => {
+  if (memSavingMethod == 1) {
+    const offset = iPos[0]
+    const start = iPos[node - offset]
+    const end = iPos[node - offset + 1] - 1
+    const textRange = new Array(end - start + 1)
+    for (let i = start; i <= end; i++) {
+      textRange[i - start] = i
+    }
+    return textRange
+  }
+  return iPos.get(node)
+}
 class SearchProvider {
   constructor() {
     this.getAcro = /[^0-9]/g
@@ -2065,11 +2115,12 @@ class SearchProvider {
             }
           }
         }
-        resultsDn["nodes"] = dnNodes
-      }
-      for (const dn of dnNodes) {
-        if (!up.has(dn) || !upNodes.has(up.get(dn))) {
-          dnNodes.delete(dn)
+        resultsDn.nodes = dnNodes
+      } else {
+        for (const dn of dnNodes) {
+          if (!up.has(dn) || !upNodes.has(up.get(dn))) {
+            dnNodes.delete(dn)
+          }
         }
       }
     }
@@ -2086,7 +2137,7 @@ class SearchProvider {
           upNodes.add(up.get(dn))
         }
       }
-      resultsUp["nodes"] = upNodes
+      resultsUp.nodes = upNodes
     }
     for (let i = lo; i > 0; i--) {
       const upType = ntypes[i]
@@ -2103,7 +2154,7 @@ class SearchProvider {
           }
         }
       }
-      resultsDn["nodes"] = dnNodes
+      resultsDn.nodes = dnNodes
     }
     for (const [nType, { nodes }] of Object.entries(tpResults)) {
       stats[nType] = nodes.size
@@ -2299,7 +2350,7 @@ class SearchProvider {
           indices: { can },
         },
       },
-      Config: { simpleBase, layers, ntypesI, ntypesinit },
+      Config: { memSavingMethod, simpleBase, layers, ntypesI, ntypesinit },
       Corpus: { links, texts, iPositions },
       State,
       Gui,
@@ -2347,7 +2398,7 @@ class SearchProvider {
       const {
         [nType]: { [posKey]: iPos },
       } = iPositions
-      const textRange = iPos.get(node)
+      const textRange = getTextRange(memSavingMethod, iPos, node)
       const { [nType]: { matches: { [layer]: matches } = {} } = {} } = tpResults
       const nodeMatches =
         matches == null || !matches.has(node) ? new Map() : matches.get(node)
@@ -2467,7 +2518,7 @@ class SearchProvider {
   }
   tabular() {
     const {
-      Config: { layers, ntypesinit },
+      Config: { memSavingMethod, layers, ntypesinit },
       Corpus: { texts, iPositions },
       State,
       tabNl,
@@ -2499,7 +2550,7 @@ class SearchProvider {
       const {
         [nType]: { [posKey]: iPos },
       } = iPositions
-      const textRange = iPos.get(node)
+      const textRange = getTextRange(memSavingMethod, iPos, node)
       const { [nType]: { matches: { [layer]: matches } = {} } = {} } = tpResults
       const nodeMatches =
         matches == null || !matches.has(node) ? new Map() : matches.get(node)
