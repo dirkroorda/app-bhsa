@@ -15,7 +15,7 @@ const configData = {
   }
  },
  "defs": {
-  "lsVersion": "v072@2021-05-20T14:28:20",
+  "lsVersion": "v077@2021-06-14T11:31:58",
   "dataset": "bhsa",
   "client": "structure",
   "org": "annotation",
@@ -103,7 +103,7 @@ const configData = {
    ],
    "package": [
     "download",
-    "structure.zip",
+    "../structure.zip",
     "zip file for offline use"
    ],
    "writing": [
