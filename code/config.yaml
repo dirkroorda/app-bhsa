@@ -63,7 +63,7 @@ provenanceSpec:
     repo: parallels
   org: etcbc
   repo: bhsa
-  version: c
+  version: 2021
   webBase: https://shebanq.ancient-data.org/hebrew
   webHint: Show this on SHEBANQ
   webLang: la
