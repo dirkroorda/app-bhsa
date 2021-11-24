@@ -3,8 +3,8 @@
 # BHSA
 
 [![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/annotation/app-bhsa/)](https://archive.softwareheritage.org/browse/origin/https://github.com/annotation/app-bhsa/)
-
 [![DOI](https://zenodo.org/badge/161639222.svg)](https://zenodo.org/badge/latestdoi/161639222)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 This is a
 [Text-Fabric](https://github.com/annotation/text-fabric) app
@@ -27,3 +27,8 @@ Just click
 and off you go.
 
 ![ls](ls.png)
+
+# Author
+
+[Dirk Roorda](https://github.com/dirkroorda)
+
